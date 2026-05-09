@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Какая система управляет твоей жизнью?</title>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{background:#0E0E12;min-height:100vh;font-family:'Manrope',sans-serif;}
+  .root{min-height:100vh;background:#0E0E12;display:flex;align-items:center;justify-content:center;padding:24px 16px;}
+  .card{width:100%;max-width:660px;background:#17171E;border-radius:24px;border:1px solid rgba(255,255,255,0.07);overflow:hidden;}
+  .intro-hero{background:linear-gradient(160deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);padding:56px 40px 48px;text-align:center;}
+  .intro-badge{display:inline-block;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.6);font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:6px 14px;border-radius:20px;margin-bottom:28px;}
+  .intro-title{font-family:'Spectral',serif;font-size:clamp(26px,5vw,38px);font-weight:300;color:#fff;line-height:1.2;letter-spacing:-0.5px;margin-bottom:16px;}
+  .intro-title em{font-style:italic;color:#a78bfa;}
+  .intro-sub{color:rgba(255,255,255,0.5);font-size:15px;line-height:1.6;max-width:420px;margin:0 auto 40px;font-weight:300;}
+  .intro-meta{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;margin-bottom:36px;}
+  .intro-meta-item{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,0.45);font-size:13px;}
+  .intro-meta-dot{width:6px;height:6px;border-radius:50%;background:#a78bfa;}
+  .btn-start{background:linear-gradient(135deg,#7c3aed,#a78bfa);color:#fff;border:none;padding:16px 40px;border-radius:50px;font-size:15px;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:'Manrope',sans-serif;box-shadow:0 8px 32px rgba(124,58,237,0.4);}
+  .btn-start:hover{transform:translateY(-2px);}
+  .quiz-top{padding:24px 32px 0;}
+  .progress-row{display:flex;align-items:center;gap:12px;margin-bottom:24px;}
+  .progress-bar-wrap{flex:1;height:3px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden;}
+  .progress-bar-fill{height:100%;background:linear-gradient(90deg,#7c3aed,#a78bfa);border-radius:2px;transition:width 0.35s ease;}
+  .progress-count{color:rgba(255,255,255,0.3);font-size:12px;white-space:nowrap;}
+  .question-body{padding:8px 32px 32px;}
+  .question-num{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#a78bfa;margin-bottom:14px;font-weight:500;}
+  .question-text{font-family:'Spectral',serif;font-size:clamp(18px,3vw,22px);font-weight:400;color:#fff;line-height:1.45;margin-bottom:28px;}
+  .options-list{display:flex;flex-direction:column;gap:10px;margin-bottom:28px;}
+  .option-btn{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.75);padding:14px 18px;border-radius:14px;text-align:left;font-size:14px;line-height:1.5;cursor:pointer;transition:all 0.18s;font-family:'Manrope',sans-serif;display:flex;align-items:flex-start;gap:12px;width:100%;}
+  .option-letter{width:22px;height:22px;min-width:22px;border-radius:50%;border:1px solid rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;margin-top:1px;transition:all 0.18s;}
+  .option-btn:hover{background:rgba(167,139,250,0.08);border-color:rgba(167,139,250,0.3);color:#fff;}
+  .option-btn.selected{background:rgba(124,58,237,0.15);border-color:#7c3aed;color:#fff;}
+  .option-btn.selected .option-letter{background:#7c3aed;border-color:#7c3aed;color:#fff;}
+  .btn-next{width:100%;background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.25);border:none;padding:15px;border-radius:14px;font-size:15px;font-weight:600;cursor:default;transition:all 0.2s;font-family:'Manrope',sans-serif;}
+  .btn-next.active{background:linear-gradient(135deg,#7c3aed,#a78bfa);color:#fff;cursor:pointer;}
+  .free-result-hero{background:linear-gradient(160deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);padding:48px 32px 40px;text-align:center;}
+  .free-result-emoji{font-size:56px;margin-bottom:16px;display:block;animation:floatIn 0.6s ease both;}
+  .free-result-label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:10px;font-weight:500;}
+  .free-result-name{font-family:'Spectral',serif;font-size:clamp(32px,6vw,44px);font-weight:300;color:#fff;margin-bottom:8px;}
+  .free-result-subtitle{color:rgba(255,255,255,0.5);font-size:15px;font-style:italic;font-family:'Spectral',serif;}
+  .paywall-body{padding:28px 32px 32px;}
+  .paywall-teaser{color:rgba(255,255,255,0.65);font-size:16px;line-height:1.7;font-weight:300;margin-bottom:24px;font-family:'Spectral',serif;font-style:italic;text-align:center;}
+  .blur-preview{position:relative;margin-bottom:24px;border-radius:14px;overflow:hidden;}
+  .blur-preview-text{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:20px;color:rgba(255,255,255,0.6);font-size:14px;line-height:1.65;filter:blur(6px);user-select:none;pointer-events:none;}
+  .blur-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(14,14,18,0.3);}
+  .blur-lock{background:rgba(124,58,237,0.25);border:1px solid rgba(124,58,237,0.5);border-radius:12px;padding:10px 20px;font-size:14px;color:#c4b5fd;font-weight:600;}
+  .paywall-box{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:24px;margin-bottom:24px;}
+  .paywall-box-title{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:16px;font-weight:600;text-align:center;}
+  .paywall-items{display:flex;flex-direction:column;gap:12px;}
+  .paywall-item{display:flex;align-items:center;gap:12px;color:rgba(255,255,255,0.6);font-size:14px;}
+  .paywall-item-icon{font-size:18px;min-width:24px;}
+  .paywall-cta{background:linear-gradient(135deg,#7c3aed,#a78bfa);color:#fff;border:none;padding:18px 32px;border-radius:14px;font-size:16px;font-weight:700;cursor:pointer;width:100%;font-family:'Manrope',sans-serif;transition:all 0.2s;text-decoration:none;display:block;text-align:center;box-shadow:0 8px 32px rgba(124,58,237,0.4);margin-bottom:12px;}
+  .paywall-cta:hover{transform:translateY(-2px);}
+  .paywall-note{text-align:center;color:rgba(255,255,255,0.3);font-size:12px;margin-bottom:20px;}
+  .consult-link{display:block;text-align:center;color:rgba(255,255,255,0.4);font-size:13px;text-decoration:none;padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.08);transition:all 0.2s;margin-bottom:16px;}
+  .consult-link:hover{color:rgba(255,255,255,0.7);border-color:rgba(255,255,255,0.15);}
+  .btn-restart{width:100%;background:transparent;border:none;color:rgba(255,255,255,0.2);padding:12px;font-size:13px;cursor:pointer;font-family:'Manrope',sans-serif;}
+  .btn-restart:hover{color:rgba(255,255,255,0.45);}
+  .fade-slide{animation:fadeSlide 0.35s ease both;}
+  @keyframes fadeSlide{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+  @keyframes floatIn{from{opacity:0;transform:scale(0.7) translateY(10px);}to{opacity:1;transform:scale(1) translateY(0);}}
+  .hidden{display:none;}
+</style>
+</head>
+<body>
+<div class="root"><div class="card">
+
+<div id="screen-intro">
+  <div class="intro-hero">
+    <div class="intro-badge">Психологический тест</div>
+    <h1 class="intro-title">Какая система<br><em>незаметно управляет</em><br>твоей жизнью?</h1>
+    <p class="intro-sub">У каждого из нас есть скрытая программа выживания. Она принимает решения раньше тебя, выбирает твои отношения и деньги — и ты об этом почти не догадываешься.</p>
+    <div class="intro-meta">
+      <div class="intro-meta-item"><div class="intro-meta-dot"></div>15 вопросов</div>
+      <div class="intro-meta-item"><div class="intro-meta-dot"></div>7 архетипов</div>
+      <div class="intro-meta-item"><div class="intro-meta-dot"></div>5–7 минут</div>
+    </div>
+    <button class="btn-start" onclick="startTest()">Начать тест</button>
+  </div>
+</div>
+
+<div id="screen-quiz" class="hidden">
+  <div class="quiz-top">
+    <div class="progress-row">
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="progress-count" id="progress-count">1 / 15</div>
+    </div>
+  </div>
+  <div class="question-body">
+    <div class="question-num" id="q-num">Вопрос 1</div>
+    <div class="question-text" id="q-text"></div>
+    <div class="options-list" id="q-options"></div>
+    <button class="btn-next" id="btn-next" onclick="nextQuestion()">Следующий вопрос →</button>
+  </div>
+</div>
+
+<div id="screen-result" class="hidden">
+  <div class="free-result-hero">
+    <span class="free-result-emoji" id="r-emoji"></span>
+    <div class="free-result-label">Твоя система</div>
+    <div class="free-result-name" id="r-name"></div>
+    <div class="free-result-subtitle" id="r-subtitle"></div>
+  </div>
+  <div class="paywall-body">
+    <p class="paywall-teaser" id="r-teaser"></p>
+    <div class="blur-preview">
+      <div class="blur-preview-text" id="r-blur">Твоя главная ловушка — верить что ценность равна полезности. Если ты не помогаешь тебя как будто не существует. Энергия утекает через бесконечную доступность. В отношениях ты даёшь больше чем получаешь и злишься на это в тишине. В деньгах хронически недооцениваешь себя и свои услуги.</div>
+      <div class="blur-overlay"><div class="blur-lock">🔒 Полный разбор закрыт</div></div>
+    </div>
+    <div class="paywall-box">
+      <div class="paywall-box-title">За £5 ты получишь</div>
+      <div class="paywall-items">
+        <div class="paywall-item"><span class="paywall-item-icon">🪤</span><span>Главная ловушка твоего архетипа</span></div>
+        <div class="paywall-item"><span class="paywall-item-icon">⚡</span><span>Как и где ты теряешь энергию</span></div>
+        <div class="paywall-item"><span class="paywall-item-icon">💸</span><span>Как это влияет на деньги и отношения</span></div>
+        <div class="paywall-item"><span class="paywall-item-icon">🫥</span><span>Что ты не замечаешь в себе</span></div>
+        <div class="paywall-item"><span class="paywall-item-icon">✨</span><span>Ключевой вывод и первый шаг</span></div>
+      </div>
+    </div>
+    <a class="paywall-cta" href="https://buy.stripe.com/eVq9AT5NN64A0CN9cA2Ji01" target="_blank">Получить полный разбор — £5 →</a>
+    <div class="paywall-note">Оплата картой · Visa, Mastercard, PayPal</div>
+    <a class="consult-link" href="https://calendly.com/evangelinamiles-psychology" target="_blank">Хочу личный разбор с Евангелиной — £70 →</a>
+    <button class="btn-restart" onclick="restart()">↩ Пройти тест заново</button>
+  </div>
+</div>
+
+</div></div>
+<script>
+const questions=[
+  {id:1,text:"Когда кто-то рядом расстроен, твоя первая реакция?",options:[{t:"Сразу пытаюсь помочь — не могу просто наблюдать",v:"A"},{t:"Анализирую, что именно их расстроило и почему",v:"B"},{t:"Чувствую тревогу, пока всё не стабилизируется",v:"C"},{t:"Замечаю, но даю им пространство разобраться самим",v:"D"}]},
+  {id:2,text:"Что происходит, когда ты делаешь что-то и тебя не замечают?",options:[{t:"Начинаю сомневаться — может, сделала что-то не так?",v:"A"},{t:"Злюсь или ухожу в себя, но вслух не скажу",v:"B"},{t:"Делаю ещё больше, чтобы наконец заметили",v:"C"},{t:"Мне достаточно собственной оценки своей работы",v:"D"}]},
+  {id:3,text:"Как ты принимаешь важные решения?",options:[{t:"Долго взвешиваю — страшно ошибиться и подвести других",v:"A"},{t:"Собираю максимум информации и всё равно сомневаюсь",v:"B"},{t:"Интуитивно, быстро — но потом переживаю, правильно ли",v:"C"},{t:"Опираюсь на свои ценности и принимаю ответственность",v:"D"}]},
+  {id:4,text:"Что ты чувствуешь, когда говоришь «нет»?",options:[{t:"Вину — кажется, что подвожу человека",v:"A"},{t:"Тревогу — а вдруг он теперь плохо обо мне подумает?",v:"B"},{t:"Почти невозможно — обычно соглашаюсь, даже не хочу",v:"C"},{t:"Нормально — «нет» это тоже полноценный ответ",v:"D"}]},
+  {id:5,text:"Как выглядит твой типичный день?",options:[{t:"Решаю чужие задачи, своё откладывается на потом",v:"A"},{t:"Контролирую каждую деталь — иначе что-то пойдёт не так",v:"B"},{t:"Много планирую, но редко запускаю",v:"C"},{t:"Фокусируюсь на приоритетах и двигаюсь вперёд",v:"D"}]},
+  {id:6,text:"Когда ты думаешь о деньгах, что возникает первым?",options:[{t:"Тревога — всегда кажется, что недостаточно или потеряю",v:"A"},{t:"Нужно заработать, чтобы доказать что-то себе или другим",v:"B"},{t:"У меня есть идеи, но я не решаюсь их реализовать",v:"C"},{t:"Инструмент — не самоцель, но я с ним в здоровом контакте",v:"D"}]},
+  {id:7,text:"В отношениях ты чаще всего...",options:[{t:"Даю больше, чем получаю — и злюсь на это в тайне",v:"A"},{t:"Боюсь близости, поэтому контролирую дистанцию",v:"B"},{t:"Нуждаюсь в постоянном подтверждении, что меня любят",v:"C"},{t:"Строю настоящую близость при сохранении себя",v:"D"}]},
+  {id:8,text:"Что происходит, когда ты делаешь ошибку?",options:[{t:"Долго казню себя — не могу просто отпустить",v:"A"},{t:"Сразу ищу, кто ещё виноват, или что пошло не так в системе",v:"B"},{t:"Замираю и не знаю, как двигаться дальше",v:"C"},{t:"Анализирую, делаю выводы и иду дальше",v:"D"}]},
+  {id:9,text:"Что ты чувствуешь, когда есть свободное время и никаких обязательств?",options:[{t:"Беспокойство — кажется, надо кому-то помочь или что-то сделать",v:"A"},{t:"Не умею отдыхать — начинаю придумывать задачи",v:"B"},{t:"Мечтаю о большом, но ничего не начинаю",v:"C"},{t:"Наслаждаюсь — это ресурс, а не потеря времени",v:"D"}]},
+  {id:10,text:"Как ты реагируешь на чужой успех?",options:[{t:"Радуюсь, но внутри что-то щемит — почему не я?",v:"A"},{t:"Анализирую их путь и думаю, что делаю не так",v:"B"},{t:"Вдохновляюсь, но не двигаюсь — жду «правильного момента»",v:"C"},{t:"Искренне радуюсь и использую как ориентир",v:"D"}]},
+  {id:11,text:"Как ты себя чувствуешь, когда кто-то на тебя злится?",options:[{t:"Сразу пытаюсь всё исправить, даже если не виновата",v:"A"},{t:"Отстраняюсь или иду в контратаку",v:"B"},{t:"Долго прокручиваю в голове — что я сделала не так?",v:"C"},{t:"Выслушиваю, разбираюсь по существу и не ломаюсь",v:"D"}]},
+  {id:12,text:"Что мешает тебе реализовать главную идею твоей жизни?",options:[{t:"Постоянно нахожусь в режиме «спасения» — своего времени нет",v:"A"},{t:"Страх потерять контроль над результатом",v:"B"},{t:"Жду, когда буду готова на 100%",v:"C"},{t:"Двигаюсь к ней, пусть и медленно",v:"D"}]},
+  {id:13,text:"Когда тебя хвалят, ты...",options:[{t:"Обесцениваю — «да ладно, это было несложно»",v:"A"},{t:"Приятно, но сразу думаю: теперь надо оправдать ожидания",v:"B"},{t:"Очень нужна эта похвала — она как подзарядка",v:"C"},{t:"Принимаю с благодарностью и иду дальше",v:"D"}]},
+  {id:14,text:"Какое ощущение чаще всего сопровождает твою работу?",options:[{t:"«Если не я — никто не сделает нормально»",v:"A"},{t:"«Должна доказать, что я достаточно хороша»",v:"B"},{t:"«У меня есть потенциал, но я как будто застряла»",v:"C"},{t:"«Я делаю то, что важно, и это моё»",v:"D"}]},
+  {id:15,text:"Как бы ты описала своё отношение к собственным потребностям?",options:[{t:"Они идут последними — сначала все остальные",v:"A"},{t:"Я их контролирую — слабость показывать нельзя",v:"B"},{t:"Не очень понимаю, что мне нужно на самом деле",v:"C"},{t:"Знаю свои потребности и умею их отстаивать",v:"D"}]}
+];
+const scoring={1:{A:{S:3},B:{SC:2,ES:1},C:{HC:3},D:{AP:3}},2:{A:{AO:3},B:{D:2,HC:1},C:{S:2,AO:1},D:{AP:3}},3:{A:{S:2,AO:1},B:{SC:2,HC:1},C:{FP:2,ES:1},D:{AP:3}},4:{A:{S:2,AO:1},B:{AO:3},C:{AO:2,S:1},D:{AP:3}},5:{A:{S:3},B:{HC:3},C:{FP:3},D:{AP:3}},6:{A:{ES:2,HC:1},B:{SC:3},C:{FP:3},D:{AP:3}},7:{A:{S:3},B:{HC:2,D:1},C:{AO:3},D:{AP:3}},8:{A:{AO:2,ES:1},B:{SC:2,D:1},C:{FP:3},D:{AP:3}},9:{A:{S:3},B:{HC:3},C:{FP:3},D:{AP:3}},10:{A:{ES:2,AO:1},B:{SC:2,AO:1},C:{FP:3},D:{AP:3}},11:{A:{S:3},B:{D:2,HC:1},C:{AO:2,ES:1},D:{AP:3}},12:{A:{S:3},B:{HC:3},C:{FP:3},D:{AP:3}},13:{A:{SC:2,S:1},B:{AO:3},C:{AO:3},D:{AP:3}},14:{A:{S:3},B:{SC:3},C:{FP:3},D:{AP:3}},15:{A:{S:3},B:{HC:3},C:{ES:3},D:{AP:3}}};
+const archetypes={
+  S:{emoji:"🫂",name:"Спасатель",subtitle:"Та, кто живёт для других",teaser:"Ты чувствуешь всех раньше чем они сами себя поняли. Это твой дар — и твоя ловушка одновременно. За твоей заботой скрывается кое-что важное о тебе самой...",blur:"Твоя главная ловушка — верить что ценность равна полезности. Если ты не помогаешь тебя как будто не существует. Энергия утекает через бесконечную доступность. В отношениях ты даёшь больше чем получаешь и злишься на это в тишине. В деньгах хронически недооцениваешь себя."},
+  SC:{emoji:"🏆",name:"Доказатель",subtitle:"Та, кто живёт на допинге признания",teaser:"Ты умна, компетентна и добиваешься результата. Но за каждым успехом не радость а следующая планка. Что именно ты доказываешь и кому — ответ внутри...",blur:"За каждым достижением прячется страх что тебя увидят настоящей. Ты добиваешься слишком много чтобы никто не заметил сомнений внутри. В деньгах зарабатываешь много но не чувствуешь безопасности."},
+  HC:{emoji:"⚙️",name:"Гиперконтролёр",subtitle:"Та, кто боится отпустить",teaser:"Ты держишь всё под контролем — и это работает. До определённого момента. Почему система даёт сбой снова и снова — ответ не там где ты ищешь...",blur:"Контроль это иллюзия безопасности. Чем больше ты контролируешь тем больше боишься потерять контроль. Энергия уходит на мониторинг и невозможность делегировать. Ты не отдыхаешь — ты переключаешься между зонами контроля."},
+  ES:{emoji:"🔍",name:"Эмоциональный сканер",subtitle:"Та, кто читает комнату раньше, чем вошла в неё",teaser:"Ты чувствуешь всё — настроения, напряжение, невысказанные ожидания. Это делает тебя невероятно чуткой. Но есть кое-что что ты при этом не слышишь совсем...",blur:"Ты настолько занята тем что чувствуют другие что забываешь спросить что чувствую я. Твой внутренний радар никогда не выключается. Принимаешь финансовые решения из страха а не из стратегии."},
+  FP:{emoji:"🌱",name:"Замороженный потенциал",subtitle:"Та, кто знает, что может больше — но не начинает",teaser:"У тебя есть идеи, видение и настоящий потенциал. Между хочу и делаю огромная пропасть. Что именно её создаёт — не то что ты думаешь...",blur:"Готовность это миф. Никто не чувствует себя готовым перед прыжком. Ожидание это форма избегания. Энергия замораживается в планировании без действия. Хронически недозарабатываешь относительно своих возможностей."},
+  D:{emoji:"🌪",name:"Хаотичный стратег",subtitle:"Та, кто видит картину, но теряет детали",teaser:"Ты мыслишь масштабно и видишь возможности везде. Но реализация хромает. За этим хаосом не лень — кое-что гораздо более интересное...",blur:"Движение это твоя защита от тревоги. Пока ты в движении кажется что всё под контролем. Но без фокуса это бег на месте. Зарабатываешь всплесками без стабильности."},
+  AP:{emoji:"🧭",name:"Взрослая позиция",subtitle:"Та, кто управляет собой",teaser:"Ты умеешь брать ответственность без самонаказания и устанавливать границы без вины. Это редкость. Но даже у этого архетипа есть скрытая ловушка...",blur:"Иногда взрослая позиция становится маской. Ты настолько привыкла быть надёжной что разучилась быть уязвимой. Это создаёт незаметную дистанцию в самых близких отношениях."}
+};
+let current=0,answers={},selected=null;
+function show(id){['screen-intro','screen-quiz','screen-result'].forEach(s=>document.getElementById(s).classList.add('hidden'));const el=document.getElementById(id);el.classList.remove('hidden');el.classList.add('fade-slide');}
+function startTest(){current=0;answers={};selected=null;renderQuestion();show('screen-quiz');}
+function renderQuestion(){
+  const q=questions[current];
+  document.getElementById('q-num').textContent='Вопрос '+(current+1);
+  document.getElementById('q-text').textContent=q.text;
+  document.getElementById('progress-count').textContent=(current+1)+' / 15';
+  document.getElementById('progress-fill').style.width=(current/15*100)+'%';
+  const letters=['A','B','C','D'];
+  const container=document.getElementById('q-options');
+  container.innerHTML='';
+  q.options.forEach((opt,i)=>{
+    const btn=document.createElement('button');
+    btn.className='option-btn';
+    btn.innerHTML='<span class="option-letter">'+letters[i]+'</span><span>'+opt.t+'</span>';
+    btn.onclick=()=>selectOption(opt.v,btn);
+    container.appendChild(btn);
+  });
+  selected=null;
+  const nb=document.getElementById('btn-next');
+  nb.classList.remove('active');
+  nb.textContent=current+1<15?'Следующий вопрос →':'Узнать результат →';
+}
+function selectOption(value,btn){selected=value;document.querySelectorAll('.option-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');document.getElementById('btn-next').classList.add('active');}
+function nextQuestion(){
+  if(!selected)return;
+  answers[questions[current].id]=selected;
+  if(current+1<questions.length){current++;renderQuestion();}
+  else{showResult();}
+}
+function showResult(){
+  const totals={S:0,SC:0,HC:0,ES:0,FP:0,D:0,AP:0};
+  for(let qId=1;qId<=15;qId++){const ans=answers[qId];if(!ans)continue;const sc=scoring[qId][ans];if(!sc)continue;for(const[k,v]of Object.entries(sc))totals[k]=(totals[k]||0)+v;}
+  let top='AP',topScore=-1;
+  for(const[k,v]of Object.entries(totals)){if(v>topScore){topScore=v;top=k;}}
+  const a=archetypes[top];
+  document.getElementById('r-emoji').textContent=a.emoji;
+  document.getElementById('r-name').textContent=a.name;
+  document.getElementById('r-subtitle').textContent=a.subtitle;
+  document.getElementById('r-teaser').textContent=a.teaser;
+  document.getElementById('r-blur').textContent=a.blur;
+  show('screen-result');
+}
+function restart(){startTest();}
+</script>
+</body>
+</html>
