@@ -121,7 +121,7 @@
         <div class="paywall-item"><span class="paywall-item-icon">✨</span><span>Ключевой вывод и первый шаг</span></div>
       </div>
     </div>
-    <a class="paywall-cta" href="https://buy.stripe.com/eVq9AT5NN64A0CN9cA2Ji01" target="_blank">Получить полный разбор — £5 →</a>
+    <a class="paywall-cta" id="r-cta" href="#" target="_blank">Получить полный разбор — £5 →</a>
     <div class="paywall-note">Оплата картой · Visa, Mastercard, PayPal</div>
     <a class="consult-link" href="https://calendly.com/evangelinamiles-psychology" target="_blank">Хочу личный разбор с Евангелиной — £70 →</a>
     <button class="btn-restart" onclick="restart()">↩ Пройти тест заново</button>
@@ -199,6 +199,17 @@ function showResult(){
   document.getElementById('r-subtitle').textContent=a.subtitle;
   document.getElementById('r-teaser').textContent=a.teaser;
   document.getElementById('r-blur').textContent=a.blur;
+  // Set individual Stripe payment link
+  const stripeLinks={
+    S:'https://buy.stripe.com/7sY00jgsrgJe71b9cA2Ji02',
+    SC:'https://buy.stripe.com/6oUfZhekj50w0CNcoM2Ji03',
+    HC:'https://buy.stripe.com/28EbJ1gsrakQ5X760o2Ji04',
+    ES:'https://buy.stripe.com/aFafZh2BBcsY4T3ewU2Ji05',
+    FP:'https://buy.stripe.com/8x2dR98ZZ1Ok85ffAY2Ji06',
+    D:'https://buy.stripe.com/28EcN56RR2Soadn4Wk2Ji07',
+    AP:'https://buy.stripe.com/5kQ7sL4JJ2SofxH2Oc2Ji08'
+  };
+  document.getElementById('r-cta').href=stripeLinks[top];
   show('screen-result');
 }
 function restart(){startTest();}
