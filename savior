@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Спасатель — Полный разбор</title>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{background:#0E0E12;min-height:100vh;font-family:'Manrope',sans-serif;}
+  .root{min-height:100vh;background:#0E0E12;display:flex;align-items:flex-start;justify-content:center;padding:24px 16px;}
+  .card{width:100%;max-width:660px;background:#17171E;border-radius:24px;border:1px solid rgba(255,255,255,0.07);overflow:hidden;}
+  .hero{background:linear-gradient(160deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);padding:48px 32px 40px;text-align:center;}
+  .badge{display:inline-block;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.6);font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:6px 14px;border-radius:20px;margin-bottom:20px;}
+  .emoji{font-size:60px;margin-bottom:16px;display:block;animation:floatIn 0.6s ease both;}
+  .archetype-label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:10px;font-weight:500;}
+  .archetype-name{font-family:'Spectral',serif;font-size:clamp(36px,6vw,48px);font-weight:300;color:#fff;margin-bottom:8px;}
+  .archetype-subtitle{color:rgba(255,255,255,0.5);font-size:15px;font-style:italic;font-family:'Spectral',serif;}
+  .divider{height:1px;background:rgba(255,255,255,0.07);margin:0 32px;}
+  .body{padding:32px 32px 40px;display:flex;flex-direction:column;gap:24px;}
+  .description{color:rgba(255,255,255,0.8);font-size:16px;line-height:1.75;font-weight:300;font-family:'Spectral',serif;font-style:italic;text-align:center;padding:0 8px;}
+  .blocks{display:flex;flex-direction:column;gap:12px;}
+  .block{background:rgba(255,255,255,0.035);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:20px;}
+  .block-title{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:10px;font-weight:600;}
+  .block-text{color:rgba(255,255,255,0.75);font-size:14px;line-height:1.7;font-weight:300;}
+  .practices{background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.2);border-radius:16px;padding:20px;}
+  .practices-title{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#a78bfa;margin-bottom:16px;font-weight:600;}
+  .practice-item{display:flex;gap:12px;margin-bottom:12px;align-items:flex-start;}
+  .practice-day{min-width:32px;height:32px;background:rgba(124,58,237,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#a78bfa;}
+  .practice-text{color:rgba(255,255,255,0.7);font-size:14px;line-height:1.5;padding-top:6px;}
+  .books{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:20px;}
+  .books-title{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:14px;font-weight:600;}
+  .book-item{display:flex;gap:10px;margin-bottom:10px;color:rgba(255,255,255,0.6);font-size:14px;line-height:1.5;}
+  .book-dot{color:#a78bfa;font-size:18px;line-height:1;}
+  .conclusion{background:linear-gradient(135deg,rgba(124,58,237,0.15),rgba(167,139,250,0.08));border:1px solid rgba(124,58,237,0.25);border-radius:16px;padding:24px;text-align:center;}
+  .conclusion-text{font-family:'Spectral',serif;font-size:18px;font-style:italic;color:rgba(255,255,255,0.9);line-height:1.6;}
+  .cta{background:linear-gradient(135deg,#7c3aed,#a78bfa);color:#fff;border:none;padding:18px 32px;border-radius:14px;font-size:16px;font-weight:700;cursor:pointer;width:100%;font-family:'Manrope',sans-serif;transition:all 0.2s;text-decoration:none;display:block;text-align:center;box-shadow:0 8px 32px rgba(124,58,237,0.4);}
+  .cta:hover{transform:translateY(-2px);}
+  .back-link{display:block;text-align:center;color:rgba(255,255,255,0.3);font-size:13px;text-decoration:none;margin-top:16px;}
+  @keyframes floatIn{from{opacity:0;transform:scale(0.7) translateY(10px);}to{opacity:1;transform:scale(1) translateY(0);}}
+</style>
+</head>
+<body>
+<div class="root"><div class="card">
+
+<div class="hero">
+  <div class="badge">Полный разбор архетипа</div>
+  <span class="emoji">🫂</span>
+  <div class="archetype-label">Твоя система</div>
+  <div class="archetype-name">Спасатель</div>
+  <div class="archetype-subtitle">Та, кто живёт для других</div>
+</div>
+
+<div class="divider"></div>
+
+<div class="body">
+
+  <p class="description">Твоя суперсила — чувствовать чужую боль и реагировать раньше чем тебя попросят. Ты создаёшь тепло вокруг себя и люди тянутся к тебе. Но эта система работает за счёт тебя — твои желания, время и энергия стабильно идут последними.</p>
+
+  <div class="blocks">
+
+```
+<div class="block">
+  <div class="block-title">🪤 Главная ловушка</div>
+  <div class="block-text">Ты веришь что ценность = полезность. Если ты не помогаешь — тебя как будто не существует. Это не осознанный выбор — это программа которая сформировалась очень давно. Скорее всего в детстве любовь нужно было заслуживать.</div>
+</div>
+
+<div class="block">
+  <div class="block-title">⚡ Как теряется энергия</div>
+  <div class="block-text">Через бесконечную доступность. Ты не умеешь восстанавливаться потому что отдыхать кажется эгоизмом. Пока другие отдыхают — ты думаешь кому ещё нужна помощь. В итоге хроническая усталость которую ты называешь нормой.</div>
+</div>
+
+<div class="block">
+  <div class="block-title">💸 Деньги</div>
+  <div class="block-text">Недооцениваешь себя и свои услуги. Сложно брать деньги за помощь — кажется что помогать нужно бесплатно или «по-человечески». Часто помогаешь другим финансово забывая про собственную устойчивость.</div>
+</div>
+
+<div class="block">
+  <div class="block-title">❤️ Отношения</div>
+  <div class="block-text">Даёшь много и обижаешься в тишине. Ведёшь молчаливый счёт — и в какой-то момент он предъявляется. Партнёр не понимает откуда претензии — он просто принимал заботу как норму. Притягиваешь тех кто берёт не отдавая.</div>
+</div>
+
+<div class="block">
+  <div class="block-title">🫥 Что ты не замечаешь</div>
+  <div class="block-text">Что твоя помощь иногда лишает других возможности расти самим. Что за заботой о других прячется страх быть ненужной. Что ты помогаешь не всегда потому что хочешь — а потому что не можешь вынести чужой боли. Это тоже про тебя, не про другого.</div>
+</div>
+```
+
+  </div>
+
+  <div class="practices">
+    <div class="practices-title">✨ 7 установок — одна на каждый день</div>
+    <div class="practice-item"><div class="practice-day">ПН</div><div class="practice-text">Моя ценность не зависит от того насколько я полезна сегодня. Я имею право просто быть.</div></div>
+    <div class="practice-item"><div class="practice-day">ВТ</div><div class="practice-text">Когда я говорю нет — я не предаю человека. Я выбираю себя. Это не эгоизм — это граница.</div></div>
+    <div class="practice-item"><div class="practice-day">СР</div><div class="practice-text">Сегодня я спрашиваю себя три раза: что мне нужно прямо сейчас? И отвечаю честно.</div></div>
+    <div class="practice-item"><div class="practice-day">ЧТ</div><div class="practice-text">Когда я не бросаюсь помогать — я не бросаю человека. Я даю ему шанс вырасти.</div></div>
+    <div class="practice-item"><div class="practice-day">ПТ</div><div class="practice-text">Сегодня я позволяю кому-то позаботиться обо мне. Принять помощь — это тоже сила.</div></div>
+    <div class="practice-item"><div class="practice-day">СБ</div><div class="practice-text">Я отдыхаю не потому что заслужила. А потому что мне нужно. Этого достаточно.</div></div>
+    <div class="practice-item"><div class="practice-day">ВС</div><div class="practice-text">В каких отношениях я даю больше чем получаю? Я называю это честно — себе.</div></div>
+  </div>
+
+  <div class="books">
+    <div class="books-title">📚 Литература</div>
+    <div class="book-item"><span class="book-dot">→</span><span>Мелани Битти «Спасать или спасаться» — про созависимость и помощь из страха</span></div>
+    <div class="book-item"><span class="book-dot">→</span><span>Линдси Гибсон «Взрослые дети эмоционально незрелых родителей» — корни архетипа</span></div>
+    <div class="book-item"><span class="book-dot">→</span><span>Габор Матэ «Когда тело говорит нет» — как спасательство разрушает здоровье</span></div>
+    <div class="book-item"><span class="book-dot">→</span><span>Генри Клауд «Границы» — практично и конкретно</span></div>
+  </div>
+
+  <div class="conclusion">
+    <div class="conclusion-text">«Ты не можешь спасти всех. Но можешь наконец позволить кому-то позаботиться о тебе.»</div>
+  </div>
+
+<a class="cta" href="https://calendly.com/evangelinamiles-psychology" target="_blank">Записаться на личный разбор с Евангелиной — £70 →</a>
+<a class="back-link" href="https://evangelinamilespsychology-bot.github.io/psychology-test">← Пройти тест заново</a>
+
+</div>
+</div></div>
+</body>
+</html>
