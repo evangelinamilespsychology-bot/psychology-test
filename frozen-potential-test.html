@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Замороженный потенциал — бесплатный психологический тест</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f3ef;
+    --surface: #ffffff;
+    --surface2: #edeae4;
+    --border: #d8d3ca;
+    --text: #1c1917;
+    --text-mid: #44403c;
+    --text-soft: #78716c;
+    --accent: #2d5fa0;
+    --accent-light: #dce8f7;
+    --accent2: #1e3f6e;
+    --gold: #a67c3a;
+    --gold-light: #fdf4e3;
+    --green: #2d6a4f;
+    --green-light: #d8f3dc;
+    --amber: #92400e;
+    --amber-light: #fef3c7;
+    --radius: 14px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  .container {
+    max-width: 660px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  .screen { display: none; animation: fadeUp 0.5s ease; }
+  .screen.active { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── INTRO ── */
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-light);
+    border: 1px solid #b3ccec;
+    padding: 5px 14px;
+    border-radius: 100px;
+    margin-bottom: 32px;
+  }
+
+  .intro-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(40px, 9vw, 68px);
+    font-weight: 600;
+    line-height: 1.05;
+    color: var(--text);
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+  }
+  .intro-title em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .intro-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(18px, 4vw, 24px);
+    font-style: italic;
+    color: var(--text-soft);
+    margin-bottom: 36px;
+    font-weight: 400;
+  }
+
+  .intro-quote {
+    background: var(--surface);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 20px 24px;
+    margin-bottom: 36px;
+    font-size: 15px;
+    color: var(--text-mid);
+    line-height: 1.8;
+    font-style: italic;
+  }
+
+  .meta-row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+  }
+  .meta-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text-soft);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 6px 14px;
+    border-radius: 100px;
+  }
+  .meta-pill-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.7;
+  }
+
+  .btn-start {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--accent);
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    padding: 16px 36px;
+    border: none;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.25s;
+    box-shadow: 0 4px 20px rgba(45,95,160,0.25);
+  }
+  .btn-start:hover {
+    background: var(--accent2);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(45,95,160,0.35);
+  }
+  .arrow { transition: transform 0.25s; }
+  .btn-start:hover .arrow { transform: translateX(4px); }
+
+  /* ── QUIZ ── */
+  .progress-wrap {
+    margin-bottom: 36px;
+  }
+  .progress-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .q-counter {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-soft);
+  }
+  .q-pct {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .progress-track {
+    height: 4px;
+    background: var(--surface2);
+    border-radius: 100px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), #5b8fd4);
+    border-radius: 100px;
+    transition: width 0.5s cubic-bezier(.4,0,.2,1);
+  }
+
+  .q-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(22px, 5vw, 32px);
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--text);
+    margin-bottom: 32px;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+
+  .opt-btn {
+    width: 100%;
+    text-align: left;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    color: var(--text-mid);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    padding: 15px 20px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .opt-num {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: var(--surface2);
+    color: var(--text-soft);
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .opt-btn:hover {
+    border-color: var(--accent);
+    background: var(--accent-light);
+    color: var(--text);
+    transform: translateX(3px);
+  }
+  .opt-btn:hover .opt-num {
+    background: var(--accent);
+    color: #fff;
+  }
+  .opt-btn.selected {
+    border-color: var(--accent);
+    background: var(--accent-light);
+    color: var(--text);
+    transform: translateX(3px);
+  }
+  .opt-btn.selected .opt-num {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .btn-back {
+    background: none;
+    border: 1.5px solid var(--border);
+    color: var(--text-soft);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 10px 22px;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-back:hover { border-color: var(--text-soft); color: var(--text-mid); }
+  .btn-back:disabled { opacity: 0.3; cursor: default; }
+
+  .btn-next {
+    background: var(--accent);
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 12px 26px;
+    border: none;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.2s;
+    opacity: 0.35;
+    pointer-events: none;
+  }
+  .btn-next.ready {
+    opacity: 1;
+    pointer-events: all;
+    box-shadow: 0 4px 16px rgba(45,95,160,0.25);
+  }
+  .btn-next.ready:hover { background: var(--accent2); transform: translateY(-1px); }
+
+  /* ── LOADING ── */
+  .loading-wrap {
+    text-align: center;
+    padding: 100px 0;
+  }
+  .spinner {
+    width: 52px; height: 52px;
+    margin: 0 auto 28px;
+    border: 3px solid var(--accent-light);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-style: italic;
+    color: var(--text-soft);
+  }
+
+  /* ── RESULT ── */
+  .result-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 100px;
+    margin-bottom: 20px;
+  }
+  .tag-low  { background: var(--green-light);  color: var(--green);  border: 1px solid #a8d5b5; }
+  .tag-mid  { background: var(--amber-light); color: var(--amber); border: 1px solid #f9d58e; }
+  .tag-high { background: var(--accent-light); color: var(--accent2); border: 1px solid #b3ccec; }
+
+  .result-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(30px, 7vw, 50px);
+    font-weight: 600;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 24px;
+  }
+  .result-title em { font-style: italic; color: var(--accent); }
+
+  .score-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+  .score-track {
+    flex: 1;
+    height: 8px;
+    background: var(--surface2);
+    border-radius: 100px;
+    overflow: hidden;
+  }
+  .score-fill {
+    height: 100%;
+    border-radius: 100px;
+    transition: width 1.4s cubic-bezier(.4,0,.2,1);
+    width: 0%;
+  }
+  .fill-low  { background: linear-gradient(90deg, #4caf84, #2d6a4f); }
+  .fill-mid  { background: linear-gradient(90deg, #f59e0b, #92400e); }
+  .fill-high { background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+  .score-label {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    min-width: 40px;
+    text-align: right;
+  }
+
+  .result-desc {
+    font-size: 15px;
+    line-height: 1.85;
+    color: var(--text-mid);
+    margin-bottom: 28px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+  }
+
+  .cards-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  @media(max-width:480px) { .cards-grid { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+  }
+  .card-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-soft);
+    margin-bottom: 12px;
+  }
+  .card ul { list-style: none; }
+  .card li {
+    font-size: 14px;
+    color: var(--text-mid);
+    line-height: 1.6;
+    padding: 3px 0 3px 18px;
+    position: relative;
+  }
+  .card li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 12px;
+  }
+
+  .rec-card {
+    background: var(--accent-light);
+    border: 1.5px solid #b3ccec;
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 32px;
+  }
+  .rec-card .card-title { color: var(--accent2); }
+  .rec-card p {
+    font-size: 15px;
+    font-style: italic;
+    color: var(--text);
+    line-height: 1.8;
+  }
+
+  hr.divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 36px 0;
+  }
+
+  .cta-box {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px;
+    text-align: center;
+  }
+  .cta-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-style: italic;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+  .cta-text {
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--text-mid);
+    margin-bottom: 24px;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .btn-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--gold);
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 14px 30px;
+    border: none;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.25s;
+    box-shadow: 0 4px 16px rgba(166,124,58,0.3);
+  }
+  .btn-cta:hover { background: #8a6428; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(166,124,58,0.35); }
+
+  .retry {
+    display: block;
+    text-align: center;
+    margin-top: 18px;
+    font-size: 13px;
+    color: var(--text-soft);
+    cursor: pointer;
+    transition: color 0.2s;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .retry:hover { color: var(--text-mid); }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- INTRO -->
+  <div class="screen active" id="screen-intro">
+    <div class="badge">Бесплатный психологический тест</div>
+    <h1 class="intro-title">Ваш потенциал<br><em>заморожен?</em></h1>
+    <p class="intro-sub">Тест на архетип «Замороженный потенциал»</p>
+    <div class="intro-quote">
+      «Я много думаю, много планирую, много изучаю — но почему-то не двигаюсь вперёд. Кажется, вот ещё немного подготовлюсь — и начну.»<br>
+      Если эта фраза звучит знакомо, этот тест для вас.
+    </div>
+    <div class="meta-row">
+      <span class="meta-pill"><span class="meta-pill-dot"></span>13 вопросов</span>
+      <span class="meta-pill"><span class="meta-pill-dot"></span>5–7 минут</span>
+      <span class="meta-pill"><span class="meta-pill-dot"></span>Бесплатно</span>
+      <span class="meta-pill"><span class="meta-pill-dot"></span>Без регистрации</span>
+    </div>
+    <button class="btn-start" onclick="startTest()">
+      Узнать свой результат <span class="arrow">→</span>
+    </button>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="screen" id="screen-quiz">
+    <div class="progress-wrap">
+      <div class="progress-top">
+        <span class="q-counter" id="q-counter"></span>
+        <span class="q-pct" id="q-pct"></span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+    </div>
+    <div class="q-text" id="q-text"></div>
+    <div class="options" id="options"></div>
+    <div class="nav-row">
+      <button class="btn-back" id="btn-back" onclick="prevQ()">← Назад</button>
+      <button class="btn-next" id="btn-next" onclick="nextQ()">Далее →</button>
+    </div>
+  </div>
+
+  <!-- LOADING -->
+  <div class="screen" id="screen-loading">
+    <div class="loading-wrap">
+      <div class="spinner"></div>
+      <p class="loading-text">Анализируем ваши ответы…</p>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="screen" id="screen-result">
+    <div class="result-tag" id="result-tag"></div>
+    <h2 class="result-title" id="result-title"></h2>
+    <div class="score-row">
+      <div class="score-track">
+        <div class="score-fill" id="score-fill"></div>
+      </div>
+      <span class="score-label" id="score-label"></span>
+    </div>
+    <div class="result-desc" id="result-desc"></div>
+    <div class="cards-grid" id="cards-grid"></div>
+    <div class="rec-card" id="rec-card"></div>
+    <hr class="divider">
+    <div class="cta-box">
+      <p class="cta-title">Хотите узнать больше?</p>
+      <p class="cta-text">Если вы хотите узнать не только степень выраженности Замороженного потенциала, но и какой психологический архетип управляет вашей жизнью в целом — пройдите расширенный тест с персональными рекомендациями и подборкой книг.</p>
+      <button class="btn-cta" onclick="window.location.href='https://evangelinamilespsychology-bot.github.io/psychology-test/index.html'">Пройти расширенный тест ✦</button>
+    </div>
+    <span class="retry" onclick="restartTest()">Пройти тест заново</span>
+  </div>
+
+</div>
+
+<script>
+const questions = [
+  { text: "У меня есть идеи и планы, о которых я думаю уже больше года, но к ним так и не приступил.", opts: ["Совсем не про меня","Скорее нет","Иногда бывает","Скорее да","Очень похоже на меня"] },
+  { text: "Перед тем как начать что-то новое, я хочу сначала изучить тему как следует — и этот процесс затягивается.", opts: ["Совсем не про меня","Скорее нет","Иногда бывает","Скорее да","Очень похоже на меня"] },
+  { text: "Мне бывает сложно отправить работу или нажать «опубликовать» — кажется, ещё чуть-чуть и будет лучше.", opts: ["Совсем не про меня","Скорее нет","Иногда бывает","Скорее да","Очень похоже на меня"] },
+  { text: "Я часто думаю: «Вот когда будет нужный момент / нужные условия — тогда и начну».", opts: ["Совсем не про меня","Скорее нет","Иногда бывает","Скорее да","Очень похоже на меня"] },
+  { text: "Я смотрю обучающие видео, читаю книги, прохожу курсы — но применяю на практике гораздо меньше, чем узнаю.", opts: ["Совсем не про меня","Скорее нет","Иногда бывает","Скорее да","Очень похоже на меня"] },
+  { text: "Мысль о том, что у меня может не получиться или меня осудят, останавливает сильнее, чем сам масштаб задачи.", opts: ["Совсем не про меня","Скорее нет","Иногда бывает","Скорее да","Очень похоже на меня"] },
+  { text: "Иногда я замечаю, что трачу время на «подготовку к подготовке» — составляю списки, ищу информацию, но к делу не перехожу.", opts: ["Совсем не про меня","Скорее нет","Иногда бывает","Скорее да","Очень похоже на меня"] },
+  { text: "Окружающие говорят, что я умный / способный / талантливый, но сам я не чувствую, что реализую это в полной мере.", opts: ["Совсем не про меня","Скорее нет","Иногда бывает","Скорее да","Очень похоже на меня"] },
+  { text: "В конце года я замечаю, что цели, которые я ставил в начале, снова переходят на следующий год.", opts: ["Совсем не про меня","Скорее нет","Иногда бывает","Скорее да","Очень похоже на меня"] },
+  { text: "Когда первые результаты оказываются не идеальными — у меня возникает желание всё переделать или бросить.", opts: ["Совсем не про меня","Скорее нет","Иногда бывает","Скорее да","Очень похоже на меня"] },
+  { text: "Мне легче помогать другим двигаться к их целям, чем двигаться к своим.", opts: ["Совсем не про меня","Скорее нет","Иногда бывает","Скорее да","Очень похоже на меня"] },
+  { text: "У меня есть ощущение, что я «ещё не готов» — хотя, если честно, уже давно знаю и умею достаточно.", opts: ["Совсем не про меня","Скорее нет","Иногда бывает","Скорее да","Очень похоже на меня"] },
+  { text: "Когда я думаю о своей мечте или большой цели, внутри сразу находится причина, почему сейчас не время.", opts: ["Совсем не про меня","Скорее нет","Иногда бывает","Скорее да","Очень похоже на меня"] }
+];
+
+const results = {
+  low: {
+    tag: "Низкий уровень признаков", tagClass: "tag-low",
+    title: "Вы живёте <em>в движении</em>",
+    desc: "Замороженный потенциал — не ваша история. Вы умеете переводить замыслы в действия, не дожидаясь идеальных условий. Возможно, иногда вы сомневаетесь или откладываете — это нормально для любого человека. Но в целом внутреннее «стоп» не управляет вашей жизнью. Вы действуете, ошибаетесь, корректируете курс — и продолжаете идти.",
+    strengths: ["Способность начинать без лишних раздумий", "Здоровое отношение к ошибкам как к опыту", "Умение отличать важное от второстепенного", "Практичность в достижении целей"],
+    limits: ["Иногда можно торопиться и упускать детали", "Может не хватать системности в долгосрочных проектах"],
+    rec: "Периодически делайте паузу и проверяйте: вы двигаетесь в том направлении, которое действительно важно — или просто «в движении»? Осознанная скорость эффективнее хаотичной активности.",
+    fillClass: "fill-low", pct: 22
+  },
+  mid: {
+    tag: "Умеренный уровень признаков", tagClass: "tag-mid",
+    title: "Потенциал <em>на паузе</em>",
+    desc: "Вы чувствуете это знакомое ощущение: знаете, чего хотите, понимаете, как это сделать — но что-то незримо удерживает. Не лень. Скорее страх не успеть, не дотянуть, оказаться недостаточно хорошим. Вы хорошо подготавливаетесь, много знаете — но между «знать» и «делать» есть дистанция, которая порой растягивается на месяцы и годы. Хорошая новость: вы уже на полпути — главное, не принять подготовку за движение.",
+    strengths: ["Глубокое понимание темы перед стартом", "Развитая рефлексия и самоосознанность", "Высокие стандарты качества", "Способность видеть картину целиком"],
+    limits: ["Склонность к «вечной готовности» вместо действия", "Страх несовершенного результата", "Зависимость от «правильного момента»", "Трудность с завершением начатого"],
+    rec: "Попробуйте «правило 80%»: если ваша готовность — 80%, этого уже достаточно для старта. Последние 20% приходят только в процессе. Выберите одну маленькую задачу и сделайте её «недостаточно хорошо», но сегодня.",
+    fillClass: "fill-mid", pct: 58
+  },
+  high: {
+    tag: "Выраженный архетип", tagClass: "tag-high",
+    title: "Архетип <em>Замороженного потенциала</em>",
+    desc: "Это про вас — и это важно признать не как слабость, а как ключ к пониманию себя. Вы умны, глубоки, способны. Вы видите возможности, умеете анализировать, много знаете. Но между потенциалом и воплощением — невидимая стена. Вы живёте в режиме «почти»: почти готов, почти время, почти достаточно знаю. Годы могут уходить в подготовку к жизни, которую вы планируете начать «потом». За этим стоит не лень — а глубинный страх: показать себя, ошибиться, оказаться «не тем».",
+    strengths: ["Богатый внутренний мир и глубина мышления", "Высокая способность к анализу и обучению", "Развитая интуиция и чувствительность", "Потенциал, который действительно существует"],
+    limits: ["Подготовка как способ избежать действия", "Страх оценки и ошибки парализует старт", "Перфекционизм как ловушка", "Ощущение «упущенного времени» давит сильнее, чем помогает"],
+    rec: "Начните с одного шага — настолько маленького, что его невозможно не сделать. Не «запустить проект», а написать одно сообщение. Не «начать вести блог», а записать одну мысль. Движение размораживает. Именно действие — а не новый курс или план — меняет что-то внутри.",
+    fillClass: "fill-high", pct: 88
+  }
+};
+
+let current = 0, answers = [];
+
+function startTest() {
+  current = 0;
+  answers = new Array(questions.length).fill(null);
+  renderQ();
+  show('screen-quiz');
+}
+
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function renderQ() {
+  const q = questions[current];
+  const pct = Math.round((current / questions.length) * 100);
+  document.getElementById('q-counter').textContent = `Вопрос ${current + 1} из ${questions.length}`;
+  document.getElementById('q-pct').textContent = pct + '%';
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('q-text').textContent = q.text;
+
+  const optDiv = document.getElementById('options');
+  optDiv.innerHTML = '';
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn' + (answers[current] === i ? ' selected' : '');
+    btn.innerHTML = `<span class="opt-num">${i + 1}</span> ${opt}`;
+    btn.onclick = () => selectOpt(i);
+    optDiv.appendChild(btn);
+  });
+
+  document.getElementById('btn-back').disabled = current === 0;
+  const nextBtn = document.getElementById('btn-next');
+  nextBtn.textContent = current === questions.length - 1 ? 'Узнать результат ✦' : 'Далее →';
+  nextBtn.classList.toggle('ready', answers[current] !== null);
+}
+
+function selectOpt(i) {
+  answers[current] = i;
+  document.querySelectorAll('.opt-btn').forEach((b, idx) => b.classList.toggle('selected', idx === i));
+  document.getElementById('btn-next').classList.add('ready');
+  setTimeout(() => nextQ(), 380);
+}
+
+function prevQ() { if (current > 0) { current--; renderQ(); } }
+function nextQ() {
+  if (answers[current] === null) return;
+  if (current < questions.length - 1) { current++; renderQ(); }
+  else showResults();
+}
+
+function showResults() {
+  show('screen-loading');
+  setTimeout(() => {
+    const total = answers.reduce((s, a, i) => s + (a ?? 0), 0);
+    const pct = Math.round((total / (questions.length * 4)) * 100);
+    const key = pct < 35 ? 'low' : pct < 65 ? 'mid' : 'high';
+    renderResult(results[key], pct);
+    show('screen-result');
+  }, 2000);
+}
+
+function renderResult(r, pct) {
+  const tag = document.getElementById('result-tag');
+  tag.textContent = r.tag;
+  tag.className = 'result-tag ' + r.tagClass;
+  document.getElementById('result-title').innerHTML = r.title;
+  document.getElementById('result-desc').textContent = r.desc;
+  document.getElementById('score-label').textContent = pct + '%';
+
+  const fill = document.getElementById('score-fill');
+  fill.className = 'score-fill ' + r.fillClass;
+  setTimeout(() => fill.style.width = pct + '%', 100);
+
+  document.getElementById('cards-grid').innerHTML = `
+    <div class="card">
+      <div class="card-title">Сильные стороны</div>
+      <ul>${r.strengths.map(s => `<li>${s}</li>`).join('')}</ul>
+    </div>
+    <div class="card">
+      <div class="card-title">Основные ограничения</div>
+      <ul>${r.limits.map(l => `<li>${l}</li>`).join('')}</ul>
+    </div>`;
+
+  document.getElementById('rec-card').innerHTML = `
+    <div class="card-title">Практическая рекомендация</div>
+    <p>${r.rec}</p>`;
+}
+
+function restartTest() { startTest(); }
+</script>
+</body>
+</html>
