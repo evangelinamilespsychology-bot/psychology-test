@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тест: Архетип «Страус» — Отрицатель реальности</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f5f0;
+    --surface: #ffffff;
+    --surface2: #eeebe3;
+    --border: #ddd8cc;
+    --text: #1c1a15;
+    --text-mid: #3d3a30;
+    --text-soft: #7a7260;
+    --accent: #5c6e3f;
+    --accent-light: #eef2e8;
+    --accent-border: #c5d4aa;
+    --sand: #b8a46a;
+    --sand-light: #faf6ec;
+    --amber: #92600e;
+    --amber-light: #fef4e0;
+    --red: #9b3232;
+    --red-light: #fef2f2;
+    --radius: 16px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+  .container { max-width:680px; margin:0 auto; padding:48px 24px 80px; }
+  .screen { display:none; animation:fadeUp 0.5s ease; }
+  .screen.active { display:block; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(18px);} to{opacity:1;transform:translateY(0);} }
+
+  /* INTRO */
+  .intro-icon { font-size:56px; display:block; margin-bottom:24px; }
+  .badge { display:inline-block; font-size:11px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:var(--accent); background:var(--accent-light); border:1px solid var(--accent-border); padding:5px 14px; border-radius:100px; margin-bottom:24px; }
+  .intro-title { font-family:'Cormorant Garamond',serif; font-size:clamp(34px,7vw,58px); font-weight:600; line-height:1.08; color:var(--text); margin-bottom:10px; letter-spacing:-0.02em; }
+  .intro-title em { font-style:italic; color:var(--accent); }
+  .intro-sub { font-family:'Cormorant Garamond',serif; font-size:clamp(16px,3.5vw,21px); font-style:italic; color:var(--text-soft); margin-bottom:28px; line-height:1.5; }
+  .intro-quote { background:var(--surface); border-left:3px solid var(--sand); border-radius:0 var(--radius) var(--radius) 0; padding:20px 24px; margin-bottom:28px; font-size:15px; color:var(--text-mid); line-height:1.8; font-style:italic; }
+  .meta-row { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:36px; }
+  .meta-pill { display:flex; align-items:center; gap:6px; font-size:12px; font-weight:500; color:var(--text-soft); background:var(--surface); border:1px solid var(--border); padding:6px 14px; border-radius:100px; }
+  .meta-dot { width:5px; height:5px; border-radius:50%; background:var(--accent); }
+  .btn-start { display:inline-flex; align-items:center; gap:10px; background:var(--accent); color:#fff; font-family:'Inter',sans-serif; font-size:15px; font-weight:600; padding:16px 36px; border:none; border-radius:100px; cursor:pointer; transition:all 0.25s; box-shadow:0 4px 20px rgba(92,110,63,0.25); }
+  .btn-start:hover { background:#4a5a32; transform:translateY(-2px); }
+
+  /* QUIZ */
+  .progress-wrap { margin-bottom:28px; }
+  .progress-top { display:flex; justify-content:space-between; margin-bottom:8px; }
+  .q-counter { font-size:12px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-soft); }
+  .q-pct { font-size:12px; font-weight:600; color:var(--accent); }
+  .progress-track { height:4px; background:var(--surface2); border-radius:100px; overflow:hidden; }
+  .progress-fill { height:100%; background:linear-gradient(90deg,var(--accent),#8aaa5a); border-radius:100px; transition:width 0.5s cubic-bezier(.4,0,.2,1); }
+
+  .q-sphere { font-size:10px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:var(--sand); margin-bottom:8px; }
+  .q-text { font-family:'Cormorant Garamond',serif; font-size:clamp(19px,4vw,27px); font-weight:600; line-height:1.35; color:var(--text); margin-bottom:24px; }
+
+  .options { display:flex; flex-direction:column; gap:8px; margin-bottom:28px; }
+  .opt-btn { width:100%; text-align:left; background:var(--surface); border:1.5px solid var(--border); color:var(--text-mid); font-family:'Inter',sans-serif; font-size:14px; font-weight:400; padding:14px 18px; border-radius:var(--radius); cursor:pointer; transition:all 0.2s; display:flex; align-items:flex-start; gap:12px; line-height:1.5; }
+  .opt-letter { width:28px; height:28px; min-width:28px; border-radius:50%; background:var(--surface2); color:var(--text-soft); font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all 0.2s; margin-top:1px; }
+  .opt-btn:hover { border-color:var(--accent); background:var(--accent-light); color:var(--text); }
+  .opt-btn:hover .opt-letter { background:var(--accent); color:#fff; }
+  .opt-btn.selected { border-color:var(--accent); background:var(--accent-light); color:var(--text); }
+  .opt-btn.selected .opt-letter { background:var(--accent); color:#fff; }
+
+  .nav-row { display:flex; justify-content:space-between; align-items:center; }
+  .btn-back { background:none; border:1.5px solid var(--border); color:var(--text-soft); font-family:'Inter',sans-serif; font-size:13px; font-weight:500; padding:10px 22px; border-radius:100px; cursor:pointer; transition:all 0.2s; }
+  .btn-back:hover { border-color:var(--text-soft); color:var(--text-mid); }
+  .btn-back:disabled { opacity:0.3; cursor:default; }
+  .btn-next { background:var(--accent); color:#fff; font-family:'Inter',sans-serif; font-size:13px; font-weight:600; padding:12px 26px; border:none; border-radius:100px; cursor:pointer; transition:all 0.2s; opacity:0.3; pointer-events:none; }
+  .btn-next.ready { opacity:1; pointer-events:all; box-shadow:0 4px 16px rgba(92,110,63,0.25); }
+  .btn-next.ready:hover { background:#4a5a32; transform:translateY(-1px); }
+
+  /* LOADING */
+  .loading-wrap { text-align:center; padding:100px 0; }
+  .spinner { width:48px; height:48px; margin:0 auto 28px; border:3px solid var(--accent-light); border-top-color:var(--accent); border-radius:50%; animation:spin 1s linear infinite; }
+  @keyframes spin { to{transform:rotate(360deg);} }
+  .loading-text { font-family:'Cormorant Garamond',serif; font-size:22px; font-style:italic; color:var(--text-soft); }
+
+  /* RESULT */
+  .result-icon { font-size:52px; display:block; margin-bottom:16px; }
+  .result-tag { display:inline-block; font-size:11px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; padding:5px 14px; border-radius:100px; margin-bottom:20px; }
+  .tag-0 { background:#e8f5ee; color:#2d6a4f; border:1px solid #a8d5b5; }
+  .tag-1 { background:var(--amber-light); color:var(--amber); border:1px solid #f5cc80; }
+  .tag-2 { background:#fff4e6; color:#b45309; border:1px solid #fcd09a; }
+  .tag-3 { background:var(--red-light); color:var(--red); border:1px solid #fca5a5; }
+
+  .result-title { font-family:'Cormorant Garamond',serif; font-size:clamp(26px,6vw,44px); font-weight:600; line-height:1.15; color:var(--text); margin-bottom:24px; }
+  .result-title em { font-style:italic; color:var(--accent); }
+
+  .gauge-wrap { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:24px; margin-bottom:20px; text-align:center; }
+  .gauge-number { font-family:'Cormorant Garamond',serif; font-size:72px; font-weight:600; line-height:1; color:var(--accent); margin-bottom:4px; }
+  .gauge-label { font-size:13px; color:var(--text-soft); font-weight:500; margin-bottom:16px; }
+  .gauge-track { height:10px; background:var(--surface2); border-radius:100px; overflow:hidden; }
+  .gauge-fill { height:100%; border-radius:100px; transition:width 1.5s cubic-bezier(.4,0,.2,1); width:0%; }
+  .fill-0 { background:linear-gradient(90deg,#4caf84,#2d6a4f); }
+  .fill-1 { background:linear-gradient(90deg,#f59e0b,#92600e); }
+  .fill-2 { background:linear-gradient(90deg,#f97316,#b45309); }
+  .fill-3 { background:linear-gradient(90deg,#e05252,#9b1c1c); }
+
+  /* Sub-indices */
+  .indices-wrap { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px; }
+  @media(max-width:480px){.indices-wrap{grid-template-columns:1fr;}}
+  .index-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px; }
+  .index-label { font-size:11px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-soft); margin-bottom:8px; }
+  .index-bar-track { height:6px; background:var(--surface2); border-radius:100px; overflow:hidden; margin-bottom:6px; }
+  .index-bar-fill { height:100%; border-radius:100px; background:var(--accent); transition:width 1.8s cubic-bezier(.4,0,.2,1); width:0%; }
+  .index-pct { font-size:14px; font-weight:700; color:var(--text); }
+
+  .insight-box { background:var(--sand-light); border:1.5px solid #e8d89a; border-radius:var(--radius); padding:20px 24px; margin-bottom:20px; font-size:15px; font-style:italic; line-height:1.8; color:var(--text); font-family:'Cormorant Garamond',serif; }
+
+  .result-desc { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:24px; margin-bottom:24px; }
+  .rdesc-section { margin-bottom:16px; }
+  .rdesc-section:last-child { margin-bottom:0; }
+  .rdesc-title { font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-soft); margin-bottom:8px; }
+  .rdesc-text { font-size:14px; line-height:1.85; color:var(--text-mid); }
+
+  hr.div { border:none; border-top:1px solid var(--border); margin:32px 0; }
+
+  /* Guide */
+  .guide { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:28px; margin-bottom:24px; }
+  .guide-title { font-family:'Cormorant Garamond',serif; font-size:24px; font-weight:600; color:var(--text); margin-bottom:4px; }
+  .guide-sub { font-size:13px; color:var(--text-soft); font-style:italic; margin-bottom:28px; }
+
+  .sign-item { margin-bottom:24px; padding-bottom:24px; border-bottom:1px solid var(--border); }
+  .sign-item:last-child { border-bottom:none; margin-bottom:0; padding-bottom:0; }
+  .sign-num { display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; background:var(--sand); color:#fff; border-radius:50%; font-size:13px; font-weight:700; margin-bottom:10px; }
+  .sign-title { font-size:15px; font-weight:600; color:var(--text); margin-bottom:6px; }
+  .sign-desc { font-size:14px; color:var(--text-mid); line-height:1.75; margin-bottom:8px; }
+  .sign-example { font-size:13px; font-style:italic; color:var(--text-soft); background:var(--surface2); padding:10px 14px; border-radius:10px; margin-bottom:8px; line-height:1.6; }
+  .sign-tip { font-size:13px; color:var(--accent); font-weight:600; }
+
+  /* 3 Steps */
+  .steps { background:var(--accent-light); border:1.5px solid var(--accent-border); border-radius:var(--radius); padding:28px; margin-bottom:24px; }
+  .steps-title { font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:600; color:var(--text); margin-bottom:20px; }
+  .step-item { display:flex; gap:16px; margin-bottom:20px; }
+  .step-item:last-child { margin-bottom:0; }
+  .step-num { width:36px; height:36px; min-width:36px; border-radius:50%; background:var(--accent); color:#fff; font-size:15px; font-weight:700; display:flex; align-items:center; justify-content:center; }
+  .step-body {}
+  .step-title { font-size:15px; font-weight:600; color:var(--text); margin-bottom:4px; }
+  .step-text { font-size:14px; color:var(--text-mid); line-height:1.75; }
+
+  /* CTA */
+  .cta-box { background:var(--surface); border:1.5px solid var(--border); border-radius:var(--radius); padding:32px; text-align:center; }
+  .cta-title { font-family:'Cormorant Garamond',serif; font-size:26px; font-weight:600; font-style:italic; color:var(--text); margin-bottom:12px; line-height:1.3; }
+  .cta-text { font-size:14px; line-height:1.8; color:var(--text-mid); margin-bottom:20px; }
+  .cta-items { text-align:left; margin-bottom:24px; display:flex; flex-direction:column; gap:8px; }
+  .cta-item { display:flex; align-items:flex-start; gap:10px; font-size:14px; color:var(--text-mid); }
+  .cta-item-icon { font-size:16px; min-width:20px; }
+  .btn-cta { display:inline-flex; align-items:center; gap:8px; background:var(--sand); color:#fff; font-family:'Inter',sans-serif; font-size:13px; font-weight:700; letter-spacing:0.05em; text-transform:uppercase; padding:14px 30px; border:none; border-radius:100px; cursor:pointer; transition:all 0.25s; box-shadow:0 4px 16px rgba(184,164,106,0.35); width:100%; justify-content:center; }
+  .btn-cta:hover { background:#9a8a54; transform:translateY(-2px); }
+  .retry { display:block; text-align:center; margin-top:16px; font-size:13px; color:var(--text-soft); cursor:pointer; text-decoration:underline; text-underline-offset:3px; }
+  .retry:hover { color:var(--text-mid); }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- INTRO -->
+<div class="screen active" id="screen-intro">
+  <span class="intro-icon">🪶</span>
+  <div class="badge">Бесплатный психологический тест</div>
+  <h1 class="intro-title">Вы прячете голову <em>в песок?</em></h1>
+  <p class="intro-sub">Тест на архетип «Страус» — Отрицатель реальности</p>
+  <div class="intro-quote">
+    Мы все иногда замечаем тревожные сигналы — и всё равно откладываем реакцию. Надеемся, что само рассосётся. Убеждаем себя, что всё не так плохо. Переключаемся на что-то менее пугающее.<br><br>
+    Этот тест поможет понять, насколько сильно этот паттерн влияет на вашу жизнь.
+  </div>
+  <div class="meta-row">
+    <span class="meta-pill"><span class="meta-dot"></span>25 вопросов</span>
+    <span class="meta-pill"><span class="meta-dot"></span>7–10 минут</span>
+    <span class="meta-pill"><span class="meta-dot"></span>Бесплатно</span>
+    <span class="meta-pill"><span class="meta-dot"></span>4 индекса</span>
+  </div>
+  <button class="btn-start" onclick="startTest()">Пройти тест 🪶</button>
+</div>
+
+<!-- QUIZ -->
+<div class="screen" id="screen-quiz">
+  <div class="progress-wrap">
+    <div class="progress-top">
+      <span class="q-counter" id="q-counter"></span>
+      <span class="q-pct" id="q-pct"></span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+  </div>
+  <div class="q-sphere" id="q-sphere"></div>
+  <div class="q-text" id="q-text"></div>
+  <div class="options" id="options"></div>
+  <div class="nav-row">
+    <button class="btn-back" id="btn-back" onclick="prevQ()">← Назад</button>
+    <button class="btn-next" id="btn-next" onclick="nextQ()">Далее →</button>
+  </div>
+</div>
+
+<!-- LOADING -->
+<div class="screen" id="screen-loading">
+  <div class="loading-wrap">
+    <div class="spinner"></div>
+    <p class="loading-text">Составляем ваш психологический профиль…</p>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div class="screen" id="screen-result">
+  <span class="result-icon">🪶</span>
+  <div class="result-tag" id="result-tag"></div>
+  <h2 class="result-title" id="result-title"></h2>
+
+  <div class="gauge-wrap">
+    <div class="gauge-number" id="gauge-number"></div>
+    <div class="gauge-label">общий индекс архетипа Страуса</div>
+    <div class="gauge-track"><div class="gauge-fill" id="gauge-fill"></div></div>
+  </div>
+
+  <div class="indices-wrap" id="indices-wrap"></div>
+  <div class="insight-box" id="insight-box"></div>
+  <div class="result-desc" id="result-desc"></div>
+
+  <hr class="div">
+
+  <div class="guide">
+    <div class="guide-title">7 признаков того, что вы прячете голову в песок</div>
+    <div class="guide-sub">Мини-гайд · Бесплатно</div>
+
+    <div class="sign-item">
+      <div class="sign-num">1</div>
+      <div class="sign-title">Вы «случайно» не проверяете важные вещи</div>
+      <div class="sign-desc">Счёт в банке, сообщение от врача, непрочитанное письмо от работодателя — они существуют, но вы их «не видите». Это не забывчивость. Это избегание.</div>
+      <div class="sign-example">«Я просто не успела посмотреть. Наверное, ничего срочного.»</div>
+      <div class="sign-tip">→ Вместо этого: поставьте конкретное время в календарь для неприятных задач. 10 минут в неделю на «страшные» письма.</div>
+    </div>
+
+    <div class="sign-item">
+      <div class="sign-num">2</div>
+      <div class="sign-title">Вы убеждаете себя, что «не так всё плохо»</div>
+      <div class="sign-desc">Рационализация — любимый инструмент Страуса. Вы находите объяснения, которые снижают тревогу, но не решают проблему. Успокоение становится важнее правды.</div>
+      <div class="sign-example">«Ну да, мы уже полгода почти не разговариваем. Но это просто усталость. У всех так бывает.»</div>
+      <div class="sign-tip">→ Вместо этого: спросите себя честно — «если бы подруга описала мне эту ситуацию, что бы я ей посоветовала?»</div>
+    </div>
+
+    <div class="sign-item">
+      <div class="sign-num">3</div>
+      <div class="sign-title">Срочная занятость заменяет важные решения</div>
+      <div class="sign-desc">Когда внутри нарастает тревога от нерешённого вопроса, вы вдруг обнаруживаете массу срочных дел. Это не продуктивность — это отвлечение с комфортным алиби.</div>
+      <div class="sign-example">«Хотела поговорить с мужем о наших отношениях, но вместо этого три часа убирала квартиру.»</div>
+      <div class="sign-tip">→ Вместо этого: когда появляется внезапная «срочность», спросите — от чего именно я сейчас убегаю?</div>
+    </div>
+
+    <div class="sign-item">
+      <div class="sign-num">4</div>
+      <div class="sign-title">Вы надеетесь, что ситуация разрешится сама</div>
+      <div class="sign-desc">Страус верит в магию времени: «пройдёт», «само устаканится», «ещё не время действовать». Иногда это правда. Но чаще — это разрешение не брать ответственность.</div>
+      <div class="sign-example">«Конфликт с коллегой? Ничего не буду делать. Само забудется.»</div>
+      <div class="sign-tip">→ Вместо этого: спросите — что произойдёт через 6 месяцев, если я ничего не сделаю прямо сейчас?</div>
+    </div>
+
+    <div class="sign-item">
+      <div class="sign-num">5</div>
+      <div class="sign-title">Правда пугает больше, чем неопределённость</div>
+      <div class="sign-desc">Вы предпочитаете не знать точный диагноз, не проверять реальное состояние отношений, не считать реальные долги. Потому что пока не знаешь — можно не действовать.</div>
+      <div class="sign-example">«Если пойду к врачу и окажется что-то серьёзное — это же будет ужасно. Лучше пока не ходить.»</div>
+      <div class="sign-tip">→ Вместо этого: напомните себе — неизвестность не защищает вас от проблемы. Она только лишает вас времени на решение.</div>
+    </div>
+
+    <div class="sign-item">
+      <div class="sign-num">6</div>
+      <div class="sign-title">Вы ждёте, что кто-то другой решит за вас</div>
+      <div class="sign-desc">Надежда на внешнее спасение — «партнёр разберётся», «начальник сам поймёт», «государство поможет» — это способ снять с себя ответственность, оставаясь в зоне комфорта.</div>
+      <div class="sign-example">«Наверное, он сам догадается, что меня это обижает. Не буду говорить.»</div>
+      <div class="sign-tip">→ Вместо этого: определите одно действие, которое только вы можете сделать в этой ситуации — и сделайте его.</div>
+    </div>
+
+    <div class="sign-item">
+      <div class="sign-num">7</div>
+      <div class="sign-title">Эмоции от проблемы вы заглушаете активностью</div>
+      <div class="sign-desc">Соцсети, сериалы, шопинг, еда, алкоголь, бесконечная занятость — всё это может быть способом не чувствовать тревогу от нерешённого. Не отдыхом, а анестезией.</div>
+      <div class="sign-example">«После того разговора с мамой я просто легла смотреть сериал. До утра.»</div>
+      <div class="sign-tip">→ Вместо этого: дайте себе 10 минут просто посидеть с неприятным чувством. Назовите его. Это уже первый шаг.</div>
+    </div>
+  </div>
+
+  <div class="steps">
+    <div class="steps-title">3 первых шага для выхода из роли Страуса</div>
+    <div class="step-item">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Составьте список «спрятанного»</div>
+        <div class="step-text">Запишите всё, что вы давно избегаете — письма, разговоры, решения, визиты к врачу, финансовые вопросы. Не для того чтобы сделать всё сразу. Просто чтобы увидеть. Осознанность — это уже половина пути.</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Выберите одну вещь и сделайте минимальный шаг</div>
+        <div class="step-text">Не «разобраться с финансами» — а «посмотреть баланс карты». Не «поговорить о наших отношениях» — а «написать что именно меня беспокоит». Маленький шаг разрушает паттерн избегания лучше большого плана.</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Задайте себе вопрос «Чего я боюсь узнать?»</div>
+        <div class="step-text">За каждым избеганием стоит конкретный страх. Когда вы его называете — он теряет власть. Не «я просто не хочу думать об этом», а «я боюсь, что если я проверю — окажется, что...». Закончите фразу. Это меняет всё.</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="div">
+
+  <div class="cta-box">
+    <p class="cta-title">Хотите понять свою главную зону избегания?</p>
+    <p class="cta-text">Этот тест показал общую картину. Расширенный тест определит, где именно паттерн Страуса разрушает вашу жизнь сильнее всего — и что с этим делать.</p>
+    <div class="cta-items">
+      <div class="cta-item"><span class="cta-item-icon">🎯</span><span>Ваша главная зона избегания — работа, деньги, отношения или здоровье</span></div>
+      <div class="cta-item"><span class="cta-item-icon">🔍</span><span>Анализ ваших личных триггеров избегания</span></div>
+      <div class="cta-item"><span class="cta-item-icon">🧩</span><span>Упражнения по изменению паттерна</span></div>
+      <div class="cta-item"><span class="cta-item-icon">📚</span><span>Персональная подборка книг</span></div>
+      <div class="cta-item"><span class="cta-item-icon">✨</span><span>Индивидуальный психологический профиль</span></div>
+    </div>
+    <button class="btn-cta" onclick="window.location.href='https://evangelinamilespsychology-bot.github.io/psychology-test/index.html'">Пройти расширенный тест ✦</button>
+  </div>
+
+  <span class="retry" onclick="restartTest()">Пройти тест заново</span>
+</div>
+
+</div>
+<script>
+// Mechanisms: D=denial, R=rationalization, DI=distraction, P=procrastination, F=fear-of-truth, E=external-rescue, EM=emotional-avoidance
+const questions = [
+  // FINANCES
+  { sphere:"💰 Финансы", text:"Вы замечаете, что уже несколько месяцев избегаете просмотра банковского счёта.", opts:[{t:"Проверяю регулярно и сразу разбираюсь с ситуацией",w:{},base:0},{t:"Откладываю проверку до момента, когда будет настроение",w:{P:3,EM:2},base:2},{t:"Успокаиваю себя мыслью, что ситуация наверняка не настолько серьёзна",w:{R:3,D:2},base:3},{t:"Переключаюсь на другие задачи и стараюсь об этом не думать",w:{DI:3,EM:2},base:3}]},
+  { sphere:"💰 Финансы", text:"Вы взяли кредит и замечаете, что выплаты становятся всё сложнее. Ваши действия?", opts:[{t:"Сразу иду в банк или к финансовому консультанту",w:{},base:0},{t:"Жду, что ситуация улучшится сама — доходы могут вырасти",w:{D:3,E:2},base:3},{t:"Думаю об этом перед сном, но днём стараюсь не акцентировать",w:{EM:3,P:2},base:2},{t:"Говорю себе: многие живут с долгами, это нормально",w:{R:3,D:1},base:2}]},
+  { sphere:"💰 Финансы", text:"Друг рассказывает о своих инвестициях и спрашивает, как у вас дела с финансами. Вы отвечаете:", opts:[{t:"Честно рассказываю и, возможно, прошу совета",w:{},base:0},{t:"Говорю «всё нормально» — не хочу углубляться в детали",w:{EM:2,D:1},base:1},{t:"Перевожу разговор на другую тему",w:{DI:3,EM:2},base:2},{t:"Ощущаю тревогу, но решаю разобраться с финансами «потом»",w:{P:3,EM:2},base:2}]},
+  { sphere:"💰 Финансы", text:"Вы несколько месяцев откладывали составление бюджета. Сейчас:", opts:[{t:"Делаю это прямо сейчас — пусть и несовершенно",w:{},base:0},{t:"Жду удобного момента, когда будет время сделать это хорошо",w:{P:3,R:2},base:2},{t:"Говорю себе, что интуитивно контролирую расходы",w:{R:3,D:2},base:3},{t:"Отвлекаюсь на что-то более приятное каждый раз, когда думаю об этом",w:{DI:3,EM:2},base:3}]},
+  { sphere:"💰 Финансы", text:"Вы получили уведомление о налоговой задолженности. Первая реакция:", opts:[{t:"Читаю внимательно и сразу разбираюсь",w:{},base:0},{t:"Откладываю — наверное, разберусь позже",w:{P:3,EM:1},base:2},{t:"Думаю: наверное, ошибка. Само исправится",w:{D:3,E:2},base:3},{t:"Убираю письмо подальше и занимаюсь другими делами",w:{DI:3,F:2},base:3}]},
+
+  // HEALTH
+  { sphere:"🏥 Здоровье", text:"Несколько недель вас беспокоит симптом, который вы замечаете, но не исследуете. Почему?", opts:[{t:"Я уже записалась к врачу",w:{},base:0},{t:"Жду, вдруг само пройдёт",w:{D:3,E:2},base:3},{t:"Убеждаю себя, что это несерьёзно и от стресса",w:{R:3,D:2},base:3},{t:"Боюсь услышать плохой диагноз — лучше пока не знать",w:{F:3,EM:2},base:3}]},
+  { sphere:"🏥 Здоровье", text:"Врач рекомендовал сдать анализы три месяца назад. Вы до сих пор не сдали, потому что:", opts:[{t:"Сдала — просто не упомянула",w:{},base:0},{t:"Всё время нет времени, постоянно что-то срочное",w:{DI:3,P:2},base:2},{t:"Если бы было что-то серьёзное — симптомы были бы сильнее",w:{R:3,D:2},base:3},{t:"Страшно — а вдруг найдут что-то плохое",w:{F:3,EM:2},base:3}]},
+  { sphere:"🏥 Здоровье", text:"Вы замечаете, что в последнее время сильно устаёте. Ваша реакция:", opts:[{t:"Анализирую причины и при необходимости обращаюсь к врачу",w:{},base:0},{t:"Думаю: у всех так — темп жизни быстрый",w:{R:2,D:2},base:2},{t:"Пью витамины и жду, что станет лучше",w:{E:2,D:2},base:2},{t:"Стараюсь не думать об этом — некогда болеть",w:{DI:3,EM:2},base:3}]},
+  { sphere:"🏥 Здоровье", text:"Близкий человек говорит, что вы выглядите уставшей и советует отдохнуть. Вы:", opts:[{t:"Благодарю за заботу и реально оцениваю своё состояние",w:{},base:0},{t:"Говорю «всё нормально» и меняю тему",w:{D:2,EM:2},base:2},{t:"Соглашаюсь внутренне, но продолжаю в том же режиме",w:{P:3,EM:2},base:2},{t:"Загружаю себя ещё больше — чтобы не думать о самочувствии",w:{DI:3,EM:3},base:3}]},
+  { sphere:"🏥 Здоровье", text:"Вы давно хотели изменить образ жизни — питание, движение, сон. Но:", opts:[{t:"Начала с малого и постепенно внедряю изменения",w:{},base:0},{t:"Жду понедельника, нового месяца, нового года",w:{P:3,R:2},base:2},{t:"Говорю себе: гены важнее образа жизни",w:{R:3,D:2},base:3},{t:"Читаю про это, смотрю видео — но не начинаю",w:{DI:2,P:3},base:2}]},
+
+  // RELATIONSHIPS
+  { sphere:"💬 Отношения", text:"В ваших отношениях уже несколько месяцев есть напряжение, о котором вы не говорите. Почему?", opts:[{t:"Говорю — мне важно решать вопросы сразу",w:{},base:0},{t:"Жду подходящего момента для разговора",w:{P:3,R:1},base:2},{t:"Надеюсь, что само рассосётся",w:{D:3,E:2},base:3},{t:"Боюсь, что разговор всё ухудшит",w:{F:3,EM:2},base:3}]},
+  { sphere:"💬 Отношения", text:"Подруга явно обижена на вас, но вы не знаете точно — из-за чего. Ваши действия:", opts:[{t:"Спрашиваю напрямую, что случилось",w:{},base:0},{t:"Жду, что она сама скажет когда будет готова",w:{P:2,E:2},base:1},{t:"Делаю вид, что ничего не замечаю",w:{D:3,EM:2},base:3},{t:"Становлюсь особенно милой и приятной — избегая прямого разговора",w:{DI:2,F:2},base:2}]},
+  { sphere:"💬 Отношения", text:"Партнёр говорит что-то, что вас задело. Вы:", opts:[{t:"Говорю об этом спокойно в подходящий момент",w:{},base:0},{t:"Молчу — не хочу делать из этого конфликт",w:{EM:3,D:1},base:2},{t:"Говорю себе: он не хотел обидеть, всё нормально",w:{R:3,D:2},base:3},{t:"Отвлекаюсь на телефон или дела — обида уходит сама",w:{DI:3,EM:2},base:3}]},
+  { sphere:"💬 Отношения", text:"Вы чувствуете, что в важных отношениях что-то изменилось — стало холоднее. Вы:", opts:[{t:"Инициирую разговор и говорю о своих наблюдениях",w:{},base:0},{t:"Жду — может, это временно",w:{D:3,P:2},base:3},{t:"Нахожу объяснения: стресс, усталость, занятость",w:{R:3,D:1},base:2},{t:"Стараюсь быть более полезной и приятной — без прямого разговора",w:{DI:2,E:2},base:2}]},
+  { sphere:"💬 Отношения", text:"Вам давно надо поговорить с мамой (отцом, сестрой) о чём-то важном. Но:", opts:[{t:"Нашла время и поговорила",w:{},base:0},{t:"Каждый раз откладываю — жду правильного момента",w:{P:3,R:2},base:2},{t:"Убеждаю себя, что это не так важно",w:{R:3,D:2},base:3},{t:"Общаюсь по мелочам, избегая главной темы",w:{DI:3,F:2},base:3}]},
+
+  // WORK & CAREER
+  { sphere:"💼 Работа", text:"Вы давно недовольны своей работой, но:", opts:[{t:"Активно ищу другие варианты или разговариваю с руководством",w:{},base:0},{t:"Жду удачного момента для перемен",w:{P:3,R:2},base:2},{t:"Говорю себе: у всех так, это нормально",w:{R:3,D:2},base:3},{t:"Думаю об этом только перед сном и стараюсь забыть днём",w:{EM:3,DI:2},base:2}]},
+  { sphere:"💼 Работа", text:"Коллега систематически присваивает ваши идеи. Вы:", opts:[{t:"Говорю об этом напрямую или обращаюсь к руководству",w:{},base:0},{t:"Надеюсь, что руководство само заметит",w:{E:3,D:1},base:2},{t:"Думаю: может, я преувеличиваю ситуацию",w:{R:3,D:2},base:3},{t:"Переключаюсь на работу и стараюсь не думать об этом",w:{DI:3,EM:2},base:3}]},
+  { sphere:"💼 Работа", text:"Проект горит, дедлайн приближается, вы ещё не начали. Вы:", opts:[{t:"Начинаю прямо сейчас — пусть несовершенно",w:{},base:0},{t:"Жду вдохновения или подходящего состояния",w:{P:3,R:2},base:2},{t:"Занимаюсь другими, менее важными задачами",w:{DI:3,P:2},base:3},{t:"Убеждаю себя, что под давлением работаю лучше",w:{R:3,D:1},base:2}]},
+  { sphere:"💼 Работа", text:"Вам поступила критика от руководителя. Ваша первая реакция:", opts:[{t:"Слушаю внимательно и анализирую, что можно улучшить",w:{},base:0},{t:"Внутренне не соглашаюсь, но молчу",w:{D:2,EM:2},base:2},{t:"Обдумываю и нахожу причины, почему критика несправедлива",w:{R:3,D:2},base:3},{t:"Расстраиваюсь, ухожу в себя и стараюсь об этом не думать",w:{EM:3,DI:2},base:2}]},
+  { sphere:"💼 Работа", text:"Вы мечтаете о своём деле или кардинальной смене карьеры. Почему этого ещё нет?", opts:[{t:"Уже делаю конкретные шаги в этом направлении",w:{},base:0},{t:"Жду, пока сложатся обстоятельства",w:{P:3,E:2},base:3},{t:"Говорю себе: это слишком рискованно, лучше стабильность",w:{R:3,F:2},base:3},{t:"Читаю, изучаю, но не начинаю действовать",w:{DI:2,P:3},base:2}]},
+
+  // PERSONAL GROWTH
+  { sphere:"🌱 Личное развитие", text:"Вы хотите изменить что-то в себе — поведение, реакции, привычки. Но:", opts:[{t:"Работаю над этим — с терапевтом или самостоятельно",w:{},base:0},{t:"Жду нужного состояния или ресурса",w:{P:3,R:2},base:2},{t:"Говорю себе: я уже достаточно работала над собой",w:{R:2,D:3},base:2},{t:"Читаю книги по саморазвитию вместо реальных изменений",w:{DI:3,P:2},base:2}]},
+  { sphere:"🌱 Личное развитие", text:"Вы несколько раз принимали одно и то же решение — и не выполняли его. Вы думаете:", opts:[{t:"Анализирую, что мешает, и меняю подход",w:{},base:0},{t:"В следующий раз точно получится",w:{D:3,E:1},base:2},{t:"Просто обстоятельства каждый раз были неподходящие",w:{R:3,D:2},base:3},{t:"Может, это мне на самом деле не нужно",w:{R:2,EM:2},base:2}]},
+  { sphere:"🌱 Личное развитие", text:"В вашей жизни есть ситуация, которая вас беспокоит, но которую вы давно не обдумываете всерьёз. Почему?", opts:[{t:"Обдумала и приняла решение или нахожусь в процессе",w:{},base:0},{t:"Слишком много других дел",w:{DI:3,P:2},base:2},{t:"Убедила себя, что это не так важно",w:{R:2,D:3},base:2},{t:"Думать об этом неприятно — предпочитаю не трогать",w:{EM:3,F:2},base:3}]},
+  { sphere:"🌱 Личное развитие", text:"Близкий человек говорит вам что-то важное о вашем поведении. Ваша реакция:", opts:[{t:"Слушаю внимательно — даже если неприятно",w:{},base:0},{t:"Соглашаюсь на словах, но внутри не принимаю",w:{D:3,R:2},base:3},{t:"Нахожу объяснения своего поведения",w:{R:3,D:1},base:2},{t:"Обижаюсь и дистанцируюсь от этой темы",w:{EM:3,F:2},base:3}]},
+  { sphere:"🌱 Личное развитие", text:"В конце года вы замечаете, что цели, которые вы ставили, снова не выполнены. Вы:", opts:[{t:"Честно анализирую, что помешало, и меняю стратегию",w:{},base:0},{t:"Говорю себе: был тяжёлый год, в следующем всё изменится",w:{R:3,D:2},base:3},{t:"Переписываю цели и откладываю на следующий год",w:{P:3,DI:1},base:2},{t:"Стараюсь не думать об этом — слишком неприятно",w:{EM:3,F:2},base:3}]}
+];
+
+const letters = ['A','B','C','D'];
+let current = 0, answers = [];
+
+function startTest() {
+  current = 0;
+  answers = new Array(questions.length).fill(null);
+  renderQ();
+  show('screen-quiz');
+}
+
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function renderQ() {
+  const q = questions[current];
+  const pct = Math.round((current / questions.length) * 100);
+  document.getElementById('q-counter').textContent = `Вопрос ${current+1} из ${questions.length}`;
+  document.getElementById('q-pct').textContent = pct + '%';
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('q-sphere').textContent = q.sphere;
+  document.getElementById('q-text').textContent = q.text;
+
+  const optDiv = document.getElementById('options');
+  optDiv.innerHTML = '';
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn' + (answers[current] === i ? ' selected' : '');
+    btn.innerHTML = `<span class="opt-letter">${letters[i]}</span><span>${opt.t}</span>`;
+    btn.onclick = () => selectOpt(i);
+    optDiv.appendChild(btn);
+  });
+
+  document.getElementById('btn-back').disabled = current === 0;
+  const next = document.getElementById('btn-next');
+  next.textContent = current === questions.length - 1 ? 'Узнать результат ✦' : 'Далее →';
+  next.classList.toggle('ready', answers[current] !== null);
+}
+
+function selectOpt(i) {
+  answers[current] = i;
+  document.querySelectorAll('.opt-btn').forEach((b,idx) => b.classList.toggle('selected', idx === i));
+  document.getElementById('btn-next').classList.add('ready');
+  setTimeout(() => nextQ(), 380);
+}
+
+function prevQ() { if (current > 0) { current--; renderQ(); } }
+function nextQ() {
+  if (answers[current] === null) return;
+  if (current < questions.length - 1) { current++; renderQ(); }
+  else showResults();
+}
+
+function showResults() {
+  show('screen-loading');
+  setTimeout(() => {
+    // Collect scores
+    const mech = {D:0,R:0,DI:0,P:0,F:0,E:0,EM:0};
+    let totalBase = 0, maxBase = 0;
+
+    questions.forEach((q, i) => {
+      const ans = answers[i];
+      if (ans === null) return;
+      const opt = q.opts[ans];
+      totalBase += opt.base;
+      maxBase += 3;
+      if (opt.w) Object.entries(opt.w).forEach(([k,v]) => mech[k] = (mech[k]||0) + v);
+    });
+
+    const overall = Math.round((totalBase / maxBase) * 100);
+
+    // Sub-indices (0-100)
+    const maxMech = {D:75,R:75,DI:75,P:75,F:45,E:45,EM:75};
+    const denial   = Math.min(100, Math.round(((mech.D + mech.R) / (maxMech.D + maxMech.R)) * 100));
+    const procr    = Math.min(100, Math.round(((mech.P + mech.DI) / (maxMech.P + maxMech.DI)) * 100));
+    const resp     = Math.min(100, Math.round(((mech.E + mech.R) / (maxMech.E + maxMech.R)) * 100));
+    const anxious  = Math.min(100, Math.round(((mech.F + mech.EM) / (maxMech.F + maxMech.EM)) * 100));
+
+    const levels = [
+      { min:0, max:25, tag:"Реалист", tagClass:"tag-0", fillClass:"fill-0",
+        title:"Вы <em>смотрите в лицо реальности</em>",
+        insight:"Признаки архетипа Страуса у вас выражены слабо. Вы склонны встречать неприятную правду напрямую, принимать решения даже в дискомфорте и брать ответственность за происходящее.",
+        what:"Вы достаточно хорошо справляетесь с избеганием. Возможно, в отдельных сферах жизни вы всё же прячете голову в песок — но это не стало вашей основной стратегией.",
+        risks:"Основная зона внимания — периоды высокого стресса, когда соблазн избегания резко возрастает даже у самых осознанных людей.",
+        losing:"На данный момент вы не теряете много из-за этого паттерна. Знание механизмов поможет вам сохранить ясность и в сложные времена."
+      },
+      { min:26, max:50, tag:"Склонность к избеганию", tagClass:"tag-1", fillClass:"fill-1",
+        title:"Иногда вы <em>отводите взгляд</em>",
+        insight:"Есть конкретные сферы жизни или типы ситуаций, где вы предпочитаете не смотреть правде в глаза. Это не катастрофа — но паттерн уже сложился и требует внимания.",
+        what:"Скорее всего, в одних сферах вы действуете решительно, а в других — откладываете, рационализируете или отвлекаетесь. Это избирательное избегание.",
+        risks:"Риск в том, что именно те зоны, которые вы избегаете, могут оказаться самыми важными. Нерешённое накапливается и требует всё больше энергии на поддержание иллюзии.",
+        losing:"Время, возможности и энергия — на поддержание убеждения, что «всё в порядке», когда это не совсем так."
+      },
+      { min:51, max:75, tag:"Выраженный Страус", tagClass:"tag-2", fillClass:"fill-2",
+        title:"Избегание стало <em>вашей стратегией</em>",
+        insight:"Паттерн Страуса заметно влияет на вашу жизнь. Отрицание, рационализация и отвлечение стали привычными инструментами — настолько привычными, что вы часто не замечаете, как они работают.",
+        what:"Вы, вероятно, умная, думающая, чуткая женщина — которая научилась избегать боли через избегание информации. Это адаптация, а не слабость. Но адаптация, которая стоит дорого.",
+        risks:"Хроническая тревога в фоновом режиме. Ощущение, что жизнь как-то идёт мимо. Проблемы, которые разрастаются именно потому, что их не трогают вовремя.",
+        losing:"Ясность. Контроль над собственной жизнью. Время, которое уходит на поддержание картины мира вместо реального движения вперёд."
+      },
+      { min:76, max:100, tag:"Хроническое отрицание реальности", tagClass:"tag-3", fillClass:"fill-3",
+        title:"Архетип Страуса — <em>это про вас</em>",
+        insight:"Это не приговор — это точка честности. Паттерн избегания глубоко встроен в вашу стратегию жизни. И он появился не случайно: когда-то это был способ выжить или защититься. Но сейчас он работает против вас.",
+        what:"Вы живёте с хроническим ощущением тревоги под поверхностью. Вы много отвлекаетесь, объясняете, ждёте и надеетесь. Проблемы не решаются — они накапливаются. И вы это чувствуете.",
+        risks:"Решения, которые надо было принять год назад, сейчас стоят дороже. Здоровье, финансы, отношения, карьера — в одной или нескольких из этих сфер есть то, что давно ждёт вашего внимания.",
+        losing:"Вы теряете время, энергию и возможности. И — самое болезненное — ощущение того, что вы управляете своей жизнью."
+      }
+    ];
+
+    const level = levels.find(l => overall >= l.min && overall <= l.max) || levels[3];
+    renderResult(level, overall, denial, procr, resp, anxious);
+    show('screen-result');
+  }, 2200);
+}
+
+function renderResult(l, overall, denial, procr, resp, anxious) {
+  document.getElementById('result-tag').textContent = l.tag;
+  document.getElementById('result-tag').className = 'result-tag ' + l.tagClass;
+  document.getElementById('result-title').innerHTML = l.title;
+  document.getElementById('gauge-number').textContent = overall + '%';
+  document.getElementById('insight-box').textContent = l.insight;
+
+  const fill = document.getElementById('gauge-fill');
+  fill.className = 'gauge-fill ' + l.fillClass;
+  setTimeout(() => fill.style.width = overall + '%', 100);
+
+  const indices = [
+    { label:"Индекс отрицания", pct: denial, color:"#9b3232" },
+    { label:"Индекс откладывания", pct: procr, color:"#b45309" },
+    { label:"Индекс избегания ответственности", pct: resp, color:"#92600e" },
+    { label:"Индекс тревожного избегания", pct: anxious, color:"#5c6e3f" }
+  ];
+
+  document.getElementById('indices-wrap').innerHTML = indices.map(idx => `
+    <div class="index-card">
+      <div class="index-label">${idx.label}</div>
+      <div class="index-bar-track"><div class="index-bar-fill" style="background:${idx.color}" data-pct="${idx.pct}"></div></div>
+      <div class="index-pct">${idx.pct}%</div>
+    </div>
+  `).join('');
+
+  setTimeout(() => {
+    document.querySelectorAll('.index-bar-fill').forEach(el => {
+      el.style.width = el.dataset.pct + '%';
+    });
+  }, 200);
+
+  document.getElementById('result-desc').innerHTML = `
+    <div class="rdesc-section"><div class="rdesc-title">Что происходит</div><div class="rdesc-text">${l.what}</div></div>
+    <div class="rdesc-section"><div class="rdesc-title">Какие риски</div><div class="rdesc-text">${l.risks}</div></div>
+    <div class="rdesc-section"><div class="rdesc-title">Что вы теряете</div><div class="rdesc-text">${l.losing}</div></div>
+  `;
+}
+
+function restartTest() { startTest(); }
+</script>
+</body>
+</html>
