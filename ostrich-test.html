@@ -277,11 +277,20 @@ const questions = [
 ];
 
 const letters = ['A','B','C','D'];
-let current = 0, answers = [];
+let current = 0, answers = [], shuffled = [];
 
 function startTest() {
   current = 0;
   answers = new Array(questions.length).fill(null);
+  // Shuffle options for each question once at test start
+  shuffled = questions.map(q => {
+    const indices = [0,1,2,3];
+    for (let i = indices.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [indices[i], indices[j]] = [indices[j], indices[i]];
+    }
+    return indices; // shuffled original indices
+  });
   renderQ();
   show('screen-quiz');
 }
@@ -301,13 +310,15 @@ function renderQ() {
   document.getElementById('q-sphere').textContent = q.sphere;
   document.getElementById('q-text').textContent = q.text;
 
+  const order = shuffled[current]; // shuffled original indices
   const optDiv = document.getElementById('options');
   optDiv.innerHTML = '';
-  q.opts.forEach((opt, i) => {
+  order.forEach((origIdx, displayPos) => {
+    const opt = q.opts[origIdx];
     const btn = document.createElement('button');
-    btn.className = 'opt-btn' + (answers[current] === i ? ' selected' : '');
-    btn.innerHTML = `<span class="opt-letter">${letters[i]}</span><span>${opt.t}</span>`;
-    btn.onclick = () => selectOpt(i);
+    btn.className = 'opt-btn' + (answers[current] === origIdx ? ' selected' : '');
+    btn.innerHTML = `<span class="opt-letter">${letters[displayPos]}</span><span>${opt.t}</span>`;
+    btn.onclick = () => selectOpt(origIdx);
     optDiv.appendChild(btn);
   });
 
@@ -317,9 +328,13 @@ function renderQ() {
   next.classList.toggle('ready', answers[current] !== null);
 }
 
-function selectOpt(i) {
-  answers[current] = i;
-  document.querySelectorAll('.opt-btn').forEach((b,idx) => b.classList.toggle('selected', idx === i));
+function selectOpt(origIdx) {
+  answers[current] = origIdx;
+  // Re-render to show selected state correctly
+  const order = shuffled[current];
+  document.querySelectorAll('.opt-btn').forEach((b, displayPos) => {
+    b.classList.toggle('selected', order[displayPos] === origIdx);
+  });
   document.getElementById('btn-next').classList.add('ready');
   setTimeout(() => nextQ(), 380);
 }
