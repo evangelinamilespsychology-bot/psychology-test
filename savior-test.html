@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тест: Вы — Тушащий Пожары?</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #faf8f5;
+    --surface: #ffffff;
+    --surface2: #f0ece4;
+    --border: #e0d9cf;
+    --text: #1a1714;
+    --text-mid: #3d3530;
+    --text-soft: #7a6f65;
+    --accent: #b5451b;
+    --accent-light: #fdf0eb;
+    --accent-border: #f0c4b0;
+    --gold: #8a6d2f;
+    --gold-light: #fdf6e3;
+    --green: #2d6a4f;
+    --green-light: #e8f5ee;
+    --amber: #92600e;
+    --amber-light: #fef4e0;
+    --red: #9b1c1c;
+    --red-light: #fef2f2;
+    --radius: 16px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  .container {
+    max-width: 660px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  .screen { display: none; animation: fadeUp 0.5s ease; }
+  .screen.active { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── INTRO ── */
+  .flame {
+    font-size: 52px;
+    display: block;
+    margin-bottom: 24px;
+    animation: flicker 2s ease-in-out infinite alternate;
+  }
+  @keyframes flicker {
+    0% { transform: scale(1) rotate(-2deg); }
+    100% { transform: scale(1.08) rotate(2deg); }
+  }
+
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-light);
+    border: 1px solid var(--accent-border);
+    padding: 5px 14px;
+    border-radius: 100px;
+    margin-bottom: 28px;
+  }
+
+  .intro-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 8vw, 60px);
+    font-weight: 600;
+    line-height: 1.08;
+    color: var(--text);
+    margin-bottom: 10px;
+    letter-spacing: -0.02em;
+  }
+  .intro-title em { font-style: italic; color: var(--accent); }
+
+  .intro-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(17px, 3.5vw, 22px);
+    font-style: italic;
+    color: var(--text-soft);
+    margin-bottom: 32px;
+    line-height: 1.5;
+  }
+
+  .intro-quote {
+    background: var(--surface);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 20px 24px;
+    margin-bottom: 32px;
+    font-size: 15px;
+    color: var(--text-mid);
+    line-height: 1.8;
+    font-style: italic;
+  }
+
+  .meta-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 36px;
+  }
+  .meta-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-soft);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 6px 14px;
+    border-radius: 100px;
+  }
+  .meta-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+
+  .btn-start {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--accent);
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 16px 36px;
+    border: none;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.25s;
+    box-shadow: 0 4px 20px rgba(181,69,27,0.25);
+  }
+  .btn-start:hover { background: #9a3a15; transform: translateY(-2px); box-shadow: 0 8px 28px rgba(181,69,27,0.35); }
+
+  /* ── QUIZ ── */
+  .progress-wrap { margin-bottom: 32px; }
+  .progress-top {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .q-counter { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-soft); }
+  .q-pct { font-size: 12px; font-weight: 600; color: var(--accent); }
+  .progress-track { height: 4px; background: var(--surface2); border-radius: 100px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), #e07a56); border-radius: 100px; transition: width 0.5s cubic-bezier(.4,0,.2,1); }
+
+  .q-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(21px, 4.5vw, 30px);
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--text);
+    margin-bottom: 28px;
+  }
+
+  .scale-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 11px;
+    color: var(--text-soft);
+    font-weight: 500;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 32px;
+  }
+
+  .opt-btn {
+    width: 100%;
+    text-align: left;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    color: var(--text-mid);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    padding: 14px 18px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .opt-score {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--surface2);
+    color: var(--text-soft);
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .opt-btn:hover { border-color: var(--accent); background: var(--accent-light); color: var(--text); }
+  .opt-btn:hover .opt-score { background: var(--accent); color: #fff; }
+  .opt-btn.selected { border-color: var(--accent); background: var(--accent-light); color: var(--text); }
+  .opt-btn.selected .opt-score { background: var(--accent); color: #fff; }
+
+  .nav-row { display: flex; justify-content: space-between; align-items: center; }
+  .btn-back {
+    background: none;
+    border: 1.5px solid var(--border);
+    color: var(--text-soft);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 10px 22px;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-back:hover { border-color: var(--text-soft); color: var(--text-mid); }
+  .btn-back:disabled { opacity: 0.3; cursor: default; }
+
+  .btn-next {
+    background: var(--accent);
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 12px 26px;
+    border: none;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.2s;
+    opacity: 0.3;
+    pointer-events: none;
+  }
+  .btn-next.ready { opacity: 1; pointer-events: all; box-shadow: 0 4px 16px rgba(181,69,27,0.25); }
+  .btn-next.ready:hover { background: #9a3a15; transform: translateY(-1px); }
+
+  /* ── LOADING ── */
+  .loading-wrap { text-align: center; padding: 100px 0; }
+  .spinner { width: 48px; height: 48px; margin: 0 auto 28px; border: 3px solid var(--accent-light); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; color: var(--text-soft); }
+
+  /* ── RESULT ── */
+  .result-flame { font-size: 48px; display: block; margin-bottom: 16px; }
+
+  .result-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 100px;
+    margin-bottom: 20px;
+  }
+  .tag-0 { background: var(--green-light); color: var(--green); border: 1px solid #a8d5b5; }
+  .tag-1 { background: var(--amber-light); color: var(--amber); border: 1px solid #f5cc80; }
+  .tag-2 { background: #fff4e6; color: #b45309; border: 1px solid #fcd09a; }
+  .tag-3 { background: var(--red-light); color: var(--red); border: 1px solid #fca5a5; }
+
+  .result-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(28px, 6vw, 46px);
+    font-weight: 600;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 24px;
+  }
+  .result-title em { font-style: italic; color: var(--accent); }
+
+  /* Percent gauge */
+  .gauge-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+  .gauge-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 72px;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .gauge-label { font-size: 13px; color: var(--text-soft); font-weight: 500; margin-bottom: 16px; }
+  .gauge-track { height: 10px; background: var(--surface2); border-radius: 100px; overflow: hidden; }
+  .gauge-fill { height: 100%; border-radius: 100px; transition: width 1.5s cubic-bezier(.4,0,.2,1); width: 0%; }
+  .gauge-fill-0 { background: linear-gradient(90deg, #4caf84, #2d6a4f); }
+  .gauge-fill-1 { background: linear-gradient(90deg, #f59e0b, #92600e); }
+  .gauge-fill-2 { background: linear-gradient(90deg, #f97316, #b45309); }
+  .gauge-fill-3 { background: linear-gradient(90deg, var(--accent), #7c1d0a); }
+
+  .insight-box {
+    background: var(--accent-light);
+    border: 1.5px solid var(--accent-border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-bottom: 24px;
+    font-size: 15px;
+    font-style: italic;
+    line-height: 1.8;
+    color: var(--text);
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+  }
+
+  .result-desc {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+  .result-desc-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-soft);
+    margin-bottom: 12px;
+  }
+  .result-desc p { font-size: 14px; line-height: 1.85; color: var(--text-mid); margin-bottom: 10px; }
+  .result-desc p:last-child { margin-bottom: 0; }
+
+  /* Brochure */
+  .brochure {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    margin-bottom: 24px;
+  }
+  .brochure-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .brochure-sub { font-size: 13px; color: var(--text-soft); margin-bottom: 24px; font-style: italic; }
+
+  .sign-item { margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+  .sign-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .sign-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .sign-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+  .sign-desc { font-size: 14px; color: var(--text-mid); line-height: 1.75; margin-bottom: 8px; }
+  .sign-example {
+    font-size: 13px;
+    font-style: italic;
+    color: var(--text-soft);
+    background: var(--surface2);
+    padding: 10px 14px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    line-height: 1.6;
+  }
+  .sign-tip {
+    font-size: 13px;
+    color: var(--accent);
+    font-weight: 600;
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  hr.div { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+
+  /* CTA */
+  .cta-box {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px;
+    text-align: center;
+  }
+  .cta-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 600;
+    font-style: italic;
+    color: var(--text);
+    margin-bottom: 12px;
+    line-height: 1.3;
+  }
+  .cta-text { font-size: 14px; line-height: 1.8; color: var(--text-mid); margin-bottom: 24px; }
+  .cta-items { text-align: left; margin-bottom: 24px; display: flex; flex-direction: column; gap: 8px; }
+  .cta-item { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: var(--text-mid); }
+  .cta-item-icon { font-size: 16px; min-width: 20px; }
+
+  .btn-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--gold);
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 14px 30px;
+    border: none;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.25s;
+    box-shadow: 0 4px 16px rgba(138,109,47,0.3);
+    width: 100%;
+    justify-content: center;
+  }
+  .btn-cta:hover { background: #74591f; transform: translateY(-2px); }
+
+  .retry { display: block; text-align: center; margin-top: 16px; font-size: 13px; color: var(--text-soft); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; transition: color 0.2s; }
+  .retry:hover { color: var(--text-mid); }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- INTRO -->
+  <div class="screen active" id="screen-intro">
+    <span class="flame">🔥</span>
+    <div class="badge">Бесплатный психологический тест</div>
+    <h1 class="intro-title">Вы — <em>Тушащий Пожары?</em></h1>
+    <p class="intro-sub">Тест на архетип Спасателя</p>
+    <div class="intro-quote">
+      «Я постоянно помогаю другим, решаю чужие проблемы, спасаю, консультирую. А на свои цели, здоровье и желания — времени не остаётся. Почему-то всегда срочно, но не моё.»<br><br>
+      Если это звучит знакомо — этот тест для вас.
+    </div>
+    <div class="meta-row">
+      <span class="meta-pill"><span class="meta-dot"></span>15 вопросов</span>
+      <span class="meta-pill"><span class="meta-dot"></span>5–7 минут</span>
+      <span class="meta-pill"><span class="meta-dot"></span>Бесплатно</span>
+      <span class="meta-pill"><span class="meta-dot"></span>Без регистрации</span>
+    </div>
+    <button class="btn-start" onclick="startTest()">Пройти тест 🔥</button>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="screen" id="screen-quiz">
+    <div class="progress-wrap">
+      <div class="progress-top">
+        <span class="q-counter" id="q-counter"></span>
+        <span class="q-pct" id="q-pct"></span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+    </div>
+    <div class="q-text" id="q-text"></div>
+    <div class="scale-labels">
+      <span>Никогда</span>
+      <span>Почти всегда</span>
+    </div>
+    <div class="options" id="options"></div>
+    <div class="nav-row">
+      <button class="btn-back" id="btn-back" onclick="prevQ()">← Назад</button>
+      <button class="btn-next" id="btn-next" onclick="nextQ()">Далее →</button>
+    </div>
+  </div>
+
+  <!-- LOADING -->
+  <div class="screen" id="screen-loading">
+    <div class="loading-wrap">
+      <div class="spinner"></div>
+      <p class="loading-text">Анализируем ваши ответы…</p>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="screen" id="screen-result">
+    <span class="result-flame">🔥</span>
+    <div class="result-tag" id="result-tag"></div>
+    <h2 class="result-title" id="result-title"></h2>
+    <div class="gauge-wrap">
+      <div class="gauge-number" id="gauge-number"></div>
+      <div class="gauge-label">признаков архетипа Тушащего Пожары</div>
+      <div class="gauge-track"><div class="gauge-fill" id="gauge-fill"></div></div>
+    </div>
+    <div class="insight-box" id="insight-box"></div>
+    <div class="result-desc" id="result-desc"></div>
+
+    <hr class="div">
+
+    <!-- Mini brochure -->
+    <div class="brochure">
+      <div class="brochure-title">5 признаков того, что вы живёте чужой жизнью</div>
+      <div class="brochure-sub">Мини-гайд · Бесплатно</div>
+
+      <div class="sign-item">
+        <div class="sign-num">1</div>
+        <div class="sign-title">Ваши планы всегда «на потом»</div>
+        <div class="sign-desc">Чужие дела кажутся срочнее ваших собственных — даже когда это не так. Вы откладываете своё снова и снова, искренне веря, что «вот разберусь с этим — и займусь собой».</div>
+        <div class="sign-example">«Начну заниматься здоровьем, как только дети устроятся. Займусь проектом, как только на работе спокойнее станет.»</div>
+        <div class="sign-tip">→ Совет: Запишите одно своё желание и поставьте его в календарь как встречу, которую нельзя отменить.</div>
+      </div>
+
+      <div class="sign-item">
+        <div class="sign-num">2</div>
+        <div class="sign-title">Вы чувствуете себя нужной только когда помогаете</div>
+        <div class="sign-desc">Ваша самооценка незаметно привязана к тому, насколько вы полезны. Когда вас не просят о помощи — появляется тревога или ощущение пустоты.</div>
+        <div class="sign-example">«Никто не позвонил сегодня с проблемой. Может, я им больше не нужна?»</div>
+        <div class="sign-tip">→ Совет: Сделайте что-то хорошее для себя — без зрителей и без чьей-либо благодарности. Просто потому что хочется.</div>
+      </div>
+
+      <div class="sign-item">
+        <div class="sign-num">3</div>
+        <div class="sign-title">Слово «нет» вызывает чувство вины</div>
+        <div class="sign-desc">Отказать — значит подвести. Эта мысль работает автоматически, раньше чем вы успеваете подумать. В итоге вы соглашаетесь даже когда устали, заняты или просто не хотите.</div>
+        <div class="sign-example">«Я не могла отказать — она так на меня рассчитывала.»</div>
+        <div class="sign-tip">→ Совет: Попробуйте формулу: «Мне нужно время подумать» вместо немедленного «да». Это даёт вам пространство для честного ответа.</div>
+      </div>
+
+      <div class="sign-item">
+        <div class="sign-num">4</div>
+        <div class="sign-title">Вы устаёте, но продолжаете давать</div>
+        <div class="sign-desc">Внутри уже пусто, но вы продолжаете помогать, поддерживать, объяснять, спасать. Остановиться кажется невозможным — а вдруг кому-то станет хуже без вас?</div>
+        <div class="sign-example">«Я знаю что устала, но кто это сделает если не я?»</div>
+        <div class="sign-tip">→ Совет: Помните: в самолёте сначала надевают маску себе. Это не эгоизм — это условие выживания.</div>
+      </div>
+
+      <div class="sign-item">
+        <div class="sign-num">5</div>
+        <div class="sign-title">Вы злитесь — но молчите</div>
+        <div class="sign-desc">Внутри накапливается обида: вы отдаёте много, а в ответ получаете мало. Но вслух этого не говорите — ведь вы сами согласились. Эта тихая злость постепенно разрушает отношения и здоровье.</div>
+        <div class="sign-example">«Я сделала для неё так много, а она даже не позвонила.»</div>
+        <div class="sign-tip">→ Совет: Назовите обиду вслух — хотя бы себе или в дневнике. Признанное чувство теряет половину своей силы.</div>
+      </div>
+    </div>
+
+    <hr class="div">
+
+    <div class="cta-box">
+      <p class="cta-title">Хотите понять, почему вы так живёте — и как это изменить?</p>
+      <p class="cta-text">Если вы узнали себя в этом тесте, это только поверхность. Расширенный тест покажет глубинную причину вашего спасательства и что конкретно делать дальше.</p>
+      <div class="cta-items">
+        <div class="cta-item"><span class="cta-item-icon">🪤</span><span>Глубинная причина вашего спасательства</span></div>
+        <div class="cta-item"><span class="cta-item-icon">⚡</span><span>Ваши личные триггеры и как они работают</span></div>
+        <div class="cta-item"><span class="cta-item-icon">💸</span><span>Как это влияет на деньги, отношения и карьеру</span></div>
+        <div class="cta-item"><span class="cta-item-icon">📚</span><span>Персональные рекомендации и подборка книг</span></div>
+        <div class="cta-item"><span class="cta-item-icon">✨</span><span>Первый конкретный шаг к изменениям</span></div>
+      </div>
+      <button class="btn-cta" onclick="window.location.href='https://evangelinamilespsychology-bot.github.io/psychology-test/index.html'">Пройти расширенный тест ✦</button>
+    </div>
+
+    <span class="retry" onclick="restartTest()">Пройти тест заново</span>
+  </div>
+
+</div>
+<script>
+const questions = [
+  "Когда кто-то рядом переживает кризис, я откладываю свои дела и переключаюсь на него.",
+  "Я чувствую себя виноватой, если отказываю кому-то в помощи.",
+  "Мои собственные цели и проекты постоянно переносятся — потому что всегда есть что-то более срочное у других.",
+  "Я ощущаю себя нужной и ценной прежде всего тогда, когда помогаю другим.",
+  "Мне трудно наблюдать, как кто-то справляется с чем-то сам — хочется вмешаться и помочь.",
+  "Я замечаю, что занята чужими проблемами больше, чем своими собственными делами.",
+  "Когда я думаю о своих желаниях и потребностях, внутри возникает ощущение, что это эгоизм.",
+  "Я соглашаюсь помогать даже тогда, когда уже устала или мне это неудобно.",
+  "Мне сложно отдыхать без ощущения, что я должна что-то делать или кому-то помогать.",
+  "Я замечаю, что злюсь или обижаюсь на тех, кому помогаю — но ничего им не говорю.",
+  "Мои важные личные задачи (здоровье, финансы, проекты) откладываются месяцами или годами.",
+  "Я чувствую тревогу, когда никто не обращается ко мне за помощью или советом.",
+  "В моей жизни постоянно происходят чужие кризисы, которые требуют моего участия.",
+  "Я трачу свою энергию на других, и на себя её уже не остаётся.",
+  "Если я не помогу, кажется, что всё пойдёт не так — никто другой не справится."
+];
+
+const opts = [
+  { label: "Никогда", score: 0 },
+  { label: "Редко", score: 1 },
+  { label: "Иногда", score: 2 },
+  { label: "Часто", score: 3 },
+  { label: "Почти всегда", score: 4 }
+];
+
+const levels = [
+  {
+    min: 0, max: 25,
+    tag: "Роль практически отсутствует", tagClass: "tag-0",
+    title: "Вы <em>умеете беречь себя</em>",
+    fillClass: "gauge-fill-0",
+    insight: "Признаки Тушащего Пожары у вас выражены слабо. Вы умеете разграничивать своё и чужое, говорить «нет» без лишней вины и ставить собственные потребности в приоритет.",
+    what: "Вы в целом хорошо справляетесь с балансом между помощью другим и заботой о себе. Возможно, иногда вы всё же берёте на себя лишнее — но это не стало системой.",
+    risks: "Основная зона внимания — не дать этому балансу нарушиться в периоды стресса или больших перемен, когда соблазн «спасти» других возрастает.",
+    losing: "Пока вы не теряете много. Но знание о механизмах спасательства поможет вам сохранить эту здоровую позицию надолго."
+  },
+  {
+    min: 26, max: 50,
+    tag: "Лёгкие признаки", tagClass: "tag-1",
+    title: "Вы <em>иногда забываете о себе</em>",
+    fillClass: "gauge-fill-1",
+    insight: "Иногда вы попадаете в роль Спасателя. Это не критично — но паттерн уже есть. В определённых ситуациях или с определёнными людьми вы склонны ставить чужое выше своего.",
+    what: "Вы замечаете в себе эти черты, но они не захватили всю вашу жизнь. Скорее всего, есть конкретные люди или ситуации, которые особенно запускают этот механизм.",
+    risks: "Риск в том, что без осознанности это может нарастать. Особенно в периоды, когда вы устаёте или чувствуете себя недооценённой.",
+    losing: "Вы теряете время и энергию в тех зонах, где берёте на себя чужую ответственность. И иногда — удовольствие от собственных проектов."
+  },
+  {
+    min: 51, max: 75,
+    tag: "Выраженная роль", tagClass: "tag-2",
+    title: "Роль Спасателя <em>заметно влияет</em> на вашу жизнь",
+    fillClass: "gauge-fill-2",
+    insight: "Если вы набрали более 50% — скорее всего, проблема не в нехватке времени. Проблема в том, что ваша энергия регулярно уходит на чужие приоритеты раньше, чем попадает на ваши собственные.",
+    what: "Роль Тушащего Пожары стала привычной стратегией. Помощь другим — это не просто доброта, это способ чувствовать себя нужной, справляться с тревогой или избегать своих собственных задач.",
+    risks: "Хроническая усталость, ощущение, что вас не ценят, накопленная обида. Ваши цели и желания годами остаются на бумаге. В деньгах — вы, вероятно, недооцениваете себя.",
+    losing: "Вы теряете время, здоровье, энергию и — самое главное — собственную жизнь. Не чью-то, а именно вашу."
+  },
+  {
+    min: 76, max: 100,
+    tag: "Хроническое спасательство", tagClass: "tag-3",
+    title: "Архетип Тушащего Пожары — <em>это про вас</em>",
+    fillClass: "gauge-fill-3",
+    insight: "Если вы набрали более 75% — это уже не черта характера, а система, которая управляет вашей жизнью. И она появилась не случайно. За ней стоит кое-что важное о вас.",
+    what: "Спасательство стало вашим способом существования. Вы живёте в режиме постоянного реагирования: чужие кризисы, чужие проблемы, чужие приоритеты. Ваша жизнь откладывается — снова и снова.",
+    risks: "Выгорание, хроническая усталость, ощущение пустоты и несправедливости. Вы много отдаёте, но не чувствуете, что получаете достаточно. В деньгах и карьере — значительно ниже своего потенциала.",
+    losing: "Вы теряете себя. Своё время, здоровье, мечты, отношения — всё это уходит на поддержание жизней других людей, пока ваша собственная ждёт."
+  }
+];
+
+let current = 0, answers = [];
+
+function startTest() {
+  current = 0;
+  answers = new Array(questions.length).fill(null);
+  renderQ();
+  show('screen-quiz');
+}
+
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function renderQ() {
+  const pct = Math.round((current / questions.length) * 100);
+  document.getElementById('q-counter').textContent = `Вопрос ${current + 1} из ${questions.length}`;
+  document.getElementById('q-pct').textContent = pct + '%';
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('q-text').textContent = questions[current];
+
+  const optDiv = document.getElementById('options');
+  optDiv.innerHTML = '';
+  opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn' + (answers[current] === i ? ' selected' : '');
+    btn.innerHTML = `<span class="opt-score">${opt.score}</span> ${opt.label}`;
+    btn.onclick = () => selectOpt(i);
+    optDiv.appendChild(btn);
+  });
+
+  document.getElementById('btn-back').disabled = current === 0;
+  const next = document.getElementById('btn-next');
+  next.textContent = current === questions.length - 1 ? 'Узнать результат ✦' : 'Далее →';
+  next.classList.toggle('ready', answers[current] !== null);
+}
+
+function selectOpt(i) {
+  answers[current] = i;
+  document.querySelectorAll('.opt-btn').forEach((b, idx) => b.classList.toggle('selected', idx === i));
+  document.getElementById('btn-next').classList.add('ready');
+  setTimeout(() => nextQ(), 380);
+}
+
+function prevQ() { if (current > 0) { current--; renderQ(); } }
+
+function nextQ() {
+  if (answers[current] === null) return;
+  if (current < questions.length - 1) { current++; renderQ(); }
+  else showResults();
+}
+
+function showResults() {
+  show('screen-loading');
+  setTimeout(() => {
+    const total = answers.reduce((s, a) => s + (a !== null ? opts[a].score : 0), 0);
+    const maxScore = questions.length * 4; // 60
+    const pct = Math.round((total / maxScore) * 100);
+    const level = levels.find(l => pct >= l.min && pct <= l.max) || levels[3];
+    renderResult(level, pct);
+    show('screen-result');
+  }, 2000);
+}
+
+function renderResult(l, pct) {
+  document.getElementById('result-tag').textContent = l.tag;
+  document.getElementById('result-tag').className = 'result-tag ' + l.tagClass;
+  document.getElementById('result-title').innerHTML = l.title;
+  document.getElementById('gauge-number').textContent = pct + '%';
+  document.getElementById('insight-box').textContent = l.insight;
+
+  const fill = document.getElementById('gauge-fill');
+  fill.className = 'gauge-fill ' + l.fillClass;
+  setTimeout(() => fill.style.width = pct + '%', 100);
+
+  document.getElementById('result-desc').innerHTML = `
+    <div class="result-desc-title">Что происходит</div>
+    <p>${l.what}</p>
+    <div class="result-desc-title" style="margin-top:16px">Какие риски</div>
+    <p>${l.risks}</p>
+    <div class="result-desc-title" style="margin-top:16px">Что вы теряете</div>
+    <p>${l.losing}</p>
+  `;
+}
+
+function restartTest() { startTest(); }
+</script>
+</body>
+</html>
